@@ -21,10 +21,10 @@
 <meta property="og:site_name" content="KK&#39;s Note">
 <meta property="og:description" content="Git —— 大名鼎鼎的分布式版本控制系统，据说是Linux系统之父Linus花两周时间写出来的，怎一个牛字了得。写过代码的人大都知道它，以写代码为生的人大都离不开它。官方文档实在太难用，这里参考大佬廖雪峰的教程，把常用命令总结写两下来，以供自己和一起搬砖的朋友备查。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;KK-Jiang&#x2F;cloud_img&#x2F;master&#x2F;1906&#x2F;a1.jpeg">
-<meta property="og:updated_time" content="2019-10-25T14:57:55.199Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1906&#x2F;a1.jpeg">
+<meta property="og:updated_time" content="2019-11-03T12:53:43.551Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;KK-Jiang&#x2F;cloud_img&#x2F;master&#x2F;1906&#x2F;a1.jpeg">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1906&#x2F;a1.jpeg">
   
     <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
   
@@ -115,8 +115,8 @@
 <div class="article-gallery">
   <div class="article-gallery-photos">
     
-      <a class="article-gallery-img fancybox" href="https://raw.githubusercontent.com/KK-Jiang/cloud_img/master/1906/a1.jpeg" target="_blank" rel="gallery_ck270oz2b0002rovs7eese4vc noopener">
-        <img src="https://raw.githubusercontent.com/KK-Jiang/cloud_img/master/1906/a1.jpeg" itemprop="image">
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/1906/a1.jpeg" target="_blank" rel="gallery_ck2izyn8x00007gvs241i8y5j noopener">
+        <img src="https://gitee.com/jjkkk/cloud_img/raw/master/1906/a1.jpeg" itemprop="image">
       </a>
     
   </div>
@@ -157,7 +157,7 @@
 <p><strong><em>本文同步发在我的<a href="https://blog.csdn.net/iizhuzhu/article/details/90760926" target="_blank" rel="noopener">CSDN Blog</a>，欢迎各位看官大佬关注指教。</em></strong></p>
 <h2 id="1-基本操作"><a href="#1-基本操作" class="headerlink" title="1.基本操作"></a>1.基本操作</h2><h3 id="创建版本库并添加文件"><a href="#创建版本库并添加文件" class="headerlink" title="创建版本库并添加文件"></a>创建版本库并添加文件</h3><p>进入到需要<strong>创建版本库</strong>的文件夹，执行以下命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-<p>git的本地库包含三部分：工作区、暂存区（stage）、分支（branch，默认为master），git add命令是将文件从工作区添加到暂存区，git commit命令是将文件从暂存区添加到分支，他们的关系如下图所示：<br><img src="https://raw.githubusercontent.com/KK-Jiang/cloud_img/master/1906/a2.jpeg" alt><br><strong>添加新文件或修改过的文件</strong>：</p>
+<p>git的本地库包含三部分：工作区、暂存区（stage）、分支（branch，默认为master），git add命令是将文件从工作区添加到暂存区，git commit命令是将文件从暂存区添加到分支，他们的关系如下图所示：<br><img src="https://gitee.com/jjkkk/cloud_img/raw/master/1906/a2.jpeg" alt><br><strong>添加新文件或修改过的文件</strong>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add file1_name file2_name file3_name ....</span><br><span class="line">git commit -m <span class="string">'这里是对添加文件的说明'</span></span><br></pre></td></tr></table></figure>
 <p><strong>查看版本库的状态</strong>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
