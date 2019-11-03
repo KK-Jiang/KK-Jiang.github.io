@@ -17,7 +17,7 @@
 <meta name="keywords" content="AI医疗,Machine Learning,Random Forest,Feature Engineering">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kaggle实战——What Causes Heart Disease?">
-<meta property="og:url" content="https:&#x2F;&#x2F;jjkkk.gitee.io&#x2F;blog&#x2F;Machine-Learning&#x2F;%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98&#x2F;kaggle%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94What%20Causes%20Heart%20Disease_&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;jjkkk.gitee.io&#x2F;blog&#x2F;kaggle%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94What%20Causes%20Heart%20Disease_&#x2F;index.html">
 <meta property="og:site_name" content="KK&#39;s Note">
 <meta property="og:description" content="记得有一次去面试，那个公司的HR聊天说，她感觉程序员面试那是面真功夫，会就会，不会装也没用。从这里想开来，还真是，码农学再多理论，终究是要去码砖的。我呢就是原来机器学习和深度学习的理论学的多，实践反而少，所以感觉有时候做事情就慢了些。">
 <meta property="og:locale" content="en">
@@ -28,7 +28,7 @@
   
     <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
   
-  <link rel="icon" href="/css/images/favicon.ico">
+  <link rel="icon" href="/blog/css/images/favicon.ico">
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   
@@ -44,14 +44,14 @@
   <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
 
   <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/blog/css/style.css">
 
-  <script src="/js/jquery-3.1.1.min.js"></script>
+  <script src="/blog/js/jquery-3.1.1.min.js"></script>
 
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.css" >
-  <link rel="stylesheet" href="/css/fashion.css" >
-  <link rel="stylesheet" href="/css/glyphs.css" >
+  <link rel="stylesheet" href="/blog/css/bootstrap.css" >
+  <link rel="stylesheet" href="/blog/css/fashion.css" >
+  <link rel="stylesheet" href="/blog/css/glyphs.css" >
 
 </head>
 
@@ -70,7 +70,7 @@
 
           <h1 class="site-title">
             
-              <a href="/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
+              <a href="/blog/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
             
           </h1>
           
@@ -85,15 +85,15 @@
             <div class="clearfix sf-menu">
               <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
                     
-                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/blog/">Home</a> </li>
                     
-                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/archives">Archives</a> </li>
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/blog/archives">Archives</a> </li>
                     
-                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/blog/categories">Categories</a> </li>
                     
-                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/blog/tags">Tags</a> </li>
                     
-                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/blog/about">About</a> </li>
                     
               </ul>
             </div>
@@ -115,7 +115,7 @@
 <div class="article-gallery">
   <div class="article-gallery-photos">
     
-      <a class="article-gallery-img fancybox" href="https://guardian.ng/wp-content/uploads/2016/08/Heart-diseases.jpg" target="_blank" rel="gallery_ck2j0pw730004v8vsd17c1qtk noopener">
+      <a class="article-gallery-img fancybox" href="https://guardian.ng/wp-content/uploads/2016/08/Heart-diseases.jpg" target="_blank" rel="gallery_ck2j13xzx0004rsvs6xy4frtg noopener">
         <img src="https://guardian.ng/wp-content/uploads/2016/08/Heart-diseases.jpg" itemprop="image">
       </a>
     
@@ -135,13 +135,13 @@
     
     <div class="article-meta">
       
-	<a href="/Machine-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/kaggle%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94What%20Causes%20Heart%20Disease_/" class="article-date">
+	<a href="/blog/kaggle%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94What%20Causes%20Heart%20Disease_/" class="article-date">
 	  <time datetime="2019-04-07T04:29:29.000Z" itemprop="datePublished">April 7, 2019</time>
 	</a>
 
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
+    <a class="article-category-link" href="/blog/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/blog/categories/Machine-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
  
       
 	<span id="busuanzi_container_page_pv">
@@ -256,11 +256,11 @@
     <footer class="entry-meta entry-footer">
       
 	<span class="ico-folder"></span>
-    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
+    <a class="article-category-link" href="/blog/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/blog/categories/Machine-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
 
       
   <span class="ico-tags"></span>
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI%E5%8C%BB%E7%96%97/" rel="tag">AI医疗</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Feature-Engineering/" rel="tag">Feature Engineering</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Random-Forest/" rel="tag">Random Forest</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/AI%E5%8C%BB%E7%96%97/" rel="tag">AI医疗</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Feature-Engineering/" rel="tag">Feature Engineering</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Random-Forest/" rel="tag">Random Forest</a></li></ul>
 
     </footer>
     <hr class="entry-footer-hr">
@@ -295,7 +295,7 @@
     
 <nav id="article-nav">
   
-    <a href="/Code-Tool/%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/Git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/blog/Git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
@@ -328,15 +328,15 @@
     </div>
     <!-- <nav id="mobile-nav">
   
-    <a href="/" class="mobile-nav-link">Home</a>
+    <a href="/blog/" class="mobile-nav-link">Home</a>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
   
-    <a href="/categories" class="mobile-nav-link">Categories</a>
+    <a href="/blog/categories" class="mobile-nav-link">Categories</a>
   
-    <a href="/tags" class="mobile-nav-link">Tags</a>
+    <a href="/blog/tags" class="mobile-nav-link">Tags</a>
   
-    <a href="/about" class="mobile-nav-link">About</a>
+    <a href="/blog/about" class="mobile-nav-link">About</a>
   
 </nav> -->
     <footer id="footer" class="site-footer">
@@ -425,13 +425,13 @@
 </script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
+  <script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js"></script>
-<script src="/js/bootstrap.js"></script>
-<script src="/js/main.js"></script>
+<script src="/blog/js/script.js"></script>
+<script src="/blog/js/bootstrap.js"></script>
+<script src="/blog/js/main.js"></script>
 
 
 
