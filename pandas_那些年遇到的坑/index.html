@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Pandas那些年遇到的坑 | KK&#39;s Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="ToolPandas" />
+  
+  
+  
+    <meta name="baidu-site-verification" content="true" />
+  
+  
+  <meta name="description" content="在进行数据处理和分析时，pandas就像一条高速公路，能够帮助我们快速的进行各种数据处理和分析操作。但是高速公路也可能有各种坑，一不小心就翻车。 在平时的工作中，也积累了pandas处理的各种坑，记录下来，跟大家分享一下。">
+<meta name="keywords" content="Tool,Pandas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas那些年遇到的坑">
+<meta property="og:url" content="https:&#x2F;&#x2F;jkknotes.com&#x2F;pandas_%E9%82%A3%E4%BA%9B%E5%B9%B4%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91&#x2F;index.html">
+<meta property="og:site_name" content="KK&#39;s Note">
+<meta property="og:description" content="在进行数据处理和分析时，pandas就像一条高速公路，能够帮助我们快速的进行各种数据处理和分析操作。但是高速公路也可能有各种坑，一不小心就翻车。 在平时的工作中，也积累了pandas处理的各种坑，记录下来，跟大家分享一下。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1911&#x2F;pandas_logo.png">
+<meta property="og:updated_time" content="2019-11-03T15:13:35.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1911&#x2F;pandas_logo.png">
+  
+    <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
+  
+  <link rel="icon" href="/css/images/favicon.ico">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+  <link rel="stylesheet" href="/css/fashion.css" >
+  <link rel="stylesheet" href="/css/glyphs.css" >
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   >
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
+            
+          </h1>
+          
+          
+            <div class="site-description">WRITE AND DO BETTER</div>
+          
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/archives">Archives</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-pandas_那些年遇到的坑" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+<div class="article-gallery">
+  <div class="article-gallery-photos">
+    
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/1911/pandas_logo.png" target="_blank" rel="gallery_ck2j57gq70002xovseq867sd1 noopener">
+        <img src="https://gitee.com/jjkkk/cloud_img/raw/master/1911/pandas_logo.png" itemprop="image">
+      </a>
+    
+  </div>
+</div>
+
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Pandas那些年遇到的坑
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/pandas_%E9%82%A3%E4%BA%9B%E5%B9%B4%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/" class="article-date">
+	  <time datetime="2019-11-02T09:03:09.000Z" itemprop="datePublished">November 2, 2019</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Code-Tool/">Code Tool</a>, <a class="article-category-link" href="/categories/Code-Tool/Code-%E6%80%BB%E7%BB%93/">Code 总结</a>
+ 
+      
+	<span id="busuanzi_container_page_pv">
+	  VISITORS<span id="busuanzi_value_page_pv"></span>
+	</span>
+
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>在进行数据处理和分析时，pandas就像一条高速公路，能够帮助我们快速的进行各种数据处理和分析操作。但是高速公路也可能有各种坑，一不小心就翻车。</strong></p>
+<p>在平时的工作中，也积累了pandas处理的各种坑，记录下来，跟大家分享一下。<a id="more"></a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-Pandas-IO中的坑"><a href="#1-Pandas-IO中的坑" class="headerlink" title="1. Pandas IO中的坑"></a>1. Pandas IO中的坑</h2><p>先从pandas的读写操作写起。使用pandas读写CSV文件的最常见的操作，即使这个最简单的操作，就很有可能掉入坑里。</p>
+<h3 id="1-1-解决读的坑，让pandas读文件内存占用减小-80"><a href="#1-1-解决读的坑，让pandas读文件内存占用减小-80" class="headerlink" title="1.1 解决读的坑，让pandas读文件内存占用减小 80%"></a>1.1 解决读的坑，让pandas读文件内存占用减小 80%</h3><p><strong>资源总是有限的， 僧多肉少是常见的</strong></p>
+<p>而我一次在公司的机器学习平台申请到5G内存，需要打开的csv文件只有900M，当你信心满满的使用 pandas.read_csv 去读取文件，意想不到的是<strong>内存爆了， 内存爆了，内存爆了！！！</strong><br>于是乎，就去学习了一下pandas在内存中存数据的方式，并且找到了解决方式，并很好的填了这个坑。</p>
+<p>一般来说，用pandas处理小于100M的数据，性能不是问题。当用pandas来处理几百兆甚至几个G的数据时，将会比较耗时，同时会导致程序因内存不足而运行失败。那么怎么就解决这个问题呢，我们先来讨论一下pandas的内存使用。</p>
+<p>如下表所示，pandas共有6种大的数据类型，在底层pandas会按照数据类型将列分组形成数据块（blocks）， 相同数据类型的列会合到一起存储。实际上，对于整型和浮点型数据，pandas将它们以 NumPy ndarray 的形式存储。</p>
+<p>从表中可以看到，不同的存储方式所占用的内存不同。其中类型为category的数据在底层使用整型数值来表示该列的值，而不是用原值。当我们把一列转换成category类型时，pandas会用一种最省空间的int子类型去表示这一列中所有的唯一值。当一列只包含有限种值时，这种设计是很不错的。</p>
+<p>了解到这里，<strong><em>我们是不是可以将占用内存多的数据类型转为占用内存低的数据类型，以到达减小内存的占用的目的。</em></strong></p>
+<table>
+<thead>
+<tr>
+<th>memory usage</th>
+<th>float</th>
+<th>int</th>
+<th>unit</th>
+<th>category</th>
+<th>bool</th>
+<th>object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 bytes</td>
+<td></td>
+<td>int8</td>
+<td>unit8</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2 bytes</td>
+<td>float16</td>
+<td>int16</td>
+<td>unit16</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4 bytes</td>
+<td>float32</td>
+<td>int32</td>
+<td>unit32</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>8 bytes</td>
+<td>float64</td>
+<td>int64</td>
+<td>unit64</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>variable</td>
+<td>Slytherin</td>
+<td></td>
+<td></td>
+<td>category</td>
+<td>bool</td>
+<td>object</td>
+</tr>
+</tbody></table>
+<p>随便找了个数据,实际操作看一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">'game_logs.csv'</span>)</span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+
+<pre><code>/Users/kk_j/anaconda3/envs/python2_for_project/lib/python2.7/site-packages/IPython/core/interactiveshell.py:2717: DtypeWarning: Columns (12,13,14,15,19,20,81,83,85,87,93,94,95,96,97,98,99,100,105,106,108,109,111,112,114,115,117,118,120,121,123,124,126,127,129,130,132,133,135,136,138,139,141,142,144,145,147,148,150,151,153,154,156,157,160) have mixed types. Specify dtype option on import or set low_memory=False.
+  interactivity=interactivity, compiler=compiler, result=result)</code></pre><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>number_of_game</th>
+      <th>day_of_week</th>
+      <th>v_name</th>
+      <th>v_league</th>
+      <th>v_game_number</th>
+      <th>h_name</th>
+      <th>h_league</th>
+      <th>h_game_number</th>
+      <th>v_score</th>
+      <th>...</th>
+      <th>h_player_7_name</th>
+      <th>h_player_7_def_pos</th>
+      <th>h_player_8_id</th>
+      <th>h_player_8_name</th>
+      <th>h_player_8_def_pos</th>
+      <th>h_player_9_id</th>
+      <th>h_player_9_name</th>
+      <th>h_player_9_def_pos</th>
+      <th>additional_info</th>
+      <th>acquisition_info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>18710504</td>
+      <td>0</td>
+      <td>Thu</td>
+      <td>CL1</td>
+      <td>na</td>
+      <td>1</td>
+      <td>FW1</td>
+      <td>na</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>Ed Mincher</td>
+      <td>7.0</td>
+      <td>mcdej101</td>
+      <td>James McDermott</td>
+      <td>8.0</td>
+      <td>kellb105</td>
+      <td>Bill Kelly</td>
+      <td>9.0</td>
+      <td>NaN</td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>18710505</td>
+      <td>0</td>
+      <td>Fri</td>
+      <td>BS1</td>
+      <td>na</td>
+      <td>1</td>
+      <td>WS3</td>
+      <td>na</td>
+      <td>1</td>
+      <td>20</td>
+      <td>...</td>
+      <td>Asa Brainard</td>
+      <td>1.0</td>
+      <td>burrh101</td>
+      <td>Henry Burroughs</td>
+      <td>9.0</td>
+      <td>berth101</td>
+      <td>Henry Berthrong</td>
+      <td>8.0</td>
+      <td>HTBF</td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>18710506</td>
+      <td>0</td>
+      <td>Sat</td>
+      <td>CL1</td>
+      <td>na</td>
+      <td>2</td>
+      <td>RC1</td>
+      <td>na</td>
+      <td>1</td>
+      <td>12</td>
+      <td>...</td>
+      <td>Pony Sager</td>
+      <td>6.0</td>
+      <td>birdg101</td>
+      <td>George Bird</td>
+      <td>7.0</td>
+      <td>stirg101</td>
+      <td>Gat Stires</td>
+      <td>9.0</td>
+      <td>NaN</td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>18710508</td>
+      <td>0</td>
+      <td>Mon</td>
+      <td>CL1</td>
+      <td>na</td>
+      <td>3</td>
+      <td>CH1</td>
+      <td>na</td>
+      <td>1</td>
+      <td>12</td>
+      <td>...</td>
+      <td>Ed Duffy</td>
+      <td>6.0</td>
+      <td>pinke101</td>
+      <td>Ed Pinkham</td>
+      <td>5.0</td>
+      <td>zettg101</td>
+      <td>George Zettlein</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>Y</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>18710509</td>
+      <td>0</td>
+      <td>Tue</td>
+      <td>BS1</td>
+      <td>na</td>
+      <td>2</td>
+      <td>TRO</td>
+      <td>na</td>
+      <td>1</td>
+      <td>9</td>
+      <td>...</td>
+      <td>Steve Bellan</td>
+      <td>5.0</td>
+      <td>pikel101</td>
+      <td>Lip Pike</td>
+      <td>3.0</td>
+      <td>cravb101</td>
+      <td>Bill Craver</td>
+      <td>6.0</td>
+      <td>HTBF</td>
+      <td>Y</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 161 columns</p>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.info(memory_usage=<span class="string">'deep'</span>)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;class &apos;pandas.core.frame.DataFrame&apos;&gt;
+RangeIndex: 171907 entries, 0 to 171906
+Columns: 161 entries, date to acquisition_info
+dtypes: float64(77), int64(6), object(78)
+memory usage: 738.1 MB</code></pre><p><strong><em>可以看到这个数据占用内存738.1M，而文件原来的大小仅仅128M，内存占用是原文件大小的 6 倍！！！</em></strong></p>
+<p>再来尝试一下在打开文件的时候指定列的类型，将数据类型为object的列变成category的数据类型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">object_cols = data.select_dtypes(include=[<span class="string">'object'</span>]).columns.tolist()</span><br><span class="line">dtype_list = [<span class="string">'category'</span> <span class="keyword">for</span> x <span class="keyword">in</span> object_cols]</span><br><span class="line">cols_dtype_dict = dict(zip(object_cols, dtype_list))</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data1 = pd.read_csv(<span class="string">'game_logs.csv'</span>, dtype=cols_dtype_dict, date_parser=[<span class="string">'date'</span>], infer_datetime_format=<span class="literal">True</span>)</span><br><span class="line">data1.info(memory_usage=<span class="string">'deep'</span>)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;class &apos;pandas.core.frame.DataFrame&apos;&gt;
+RangeIndex: 171907 entries, 0 to 171906
+Columns: 161 entries, date to acquisition_info
+dtypes: category(78), float64(77), int64(6)
+memory usage: 157.2 MB</code></pre><p>可以看到，<strong><em>内存占用从 738.1M 降到了157.2M，有效降低 78.7%</em></strong>， 而且那一堆Warning 也没了</p>
+<p>很开心对不对，<strong>没有资源，咱自己创造资源</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly90aW1nc2EuYmFpZHUuY29tL3RpbWc_aW1hZ2UmcXVhbGl0eT04MCZzaXplPWI5OTk5XzEwMDAwJnNlYz0xNTU0NjM2NjI5MjM4JmRpPWI3N2Q3MWU2MzVmOGVkMmU3ZmE0MGM4NDdhYzFiODkzJmltZ3R5cGU9MCZzcmM9aHR0cDovL2Itc3NsLmR1aXRhbmcuY29tL3VwbG9hZHMvaXRlbS8yMDE3MDMvMjkvMjAxNzAzMjkxNjE3MjhfZmRTTUYudGh1bWIuMjI0XzAuZ2lm" alt=""></p>
+<h3 id="1-2-解决写的坑，让磁盘空间节约60"><a href="#1-2-解决写的坑，让磁盘空间节约60" class="headerlink" title="1.2 解决写的坑，让磁盘空间节约60%"></a>1.2 解决写的坑，让磁盘空间节约60%</h3><p>经常听见有小伙伴说，XXXX服务器磁盘空间又满了，大家清理一下自己不用的数据，数据很重要，不能删怎么办。</p>
+<p>还是那句话，<strong>没有资源，咱创造资源</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data1.to_csv(<span class="string">'game_logs.gz'</span>, compression=<span class="string">'gzip'</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p>去磁盘再去看看文件大小，是不是磁盘变大了。错了，是不是文件变小了。</p>
+<p><strong><em>在我的电脑里，这个文件从 128M 减小到18M。我去，磁盘占用减小了86%</em></strong></p>
+<p>那读取的时候怎么办呢，读取方式不变，还是 read_csv </p>
+<h3 id="1-3-解决写的坑，避免挖个坑"><a href="#1-3-解决写的坑，避免挖个坑" class="headerlink" title="1.3 解决写的坑，避免挖个坑"></a>1.3 解决写的坑，避免挖个坑</h3><p>这个坑比较简单，但是一不小心就翻车。看个例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(np.random.rand(<span class="number">2</span>,<span class="number">2</span>), columns=[<span class="string">'a'</span>, <span class="string">'b'</span>])</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.977292</td>
+      <td>0.343893</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.478050</td>
+      <td>0.781146</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.to_csv(<span class="string">'test_df.csv'</span>)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df1 = pd.read_csv(<span class="string">'test_df.csv'</span>)</span><br><span class="line">df1</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0.977292</td>
+      <td>0.343893</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>0.478050</td>
+      <td>0.781146</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>通过以上例子，可以看到，<strong><em>一存一读间，却多了一列。</em></strong><br>这种情况极易给后面的操作埋下一个大坑，而且还蒙在鼓里找不出原因。</p>
+<p>怎么解决呢，只需要在存的时候，指定 index 参数为 False 即可。再来试一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.to_csv(<span class="string">'test_df.csv'</span>, index=<span class="literal">False</span>)</span><br><span class="line">df = pd.read_csv(<span class="string">'test_df.csv'</span>)</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.977292</td>
+      <td>0.343893</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.478050</td>
+      <td>0.781146</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3 id="1-4-python2：加上encoding，-读写好习惯"><a href="#1-4-python2：加上encoding，-读写好习惯" class="headerlink" title="1.4 python2：加上encoding， 读写好习惯"></a>1.4 python2：加上encoding， 读写好习惯</h3><p>这个就不举例子讲了。但是讲一下原因。</p>
+<p>在工作中经常处理带中文字符的csv文件，一个好的习惯是，在使用pandas的read_csv（其他的read操作一样）进行文件读取时，<strong><em>加上参数 encoding=‘utf-8’</em></strong>，并且在数据的操作中都始终使用utf-8的编码格式，会减少非常多的坑。另外在使用 .to_csv 存储带有中文字符的DataFram数据时，加上参数 <strong><em>encoding=‘utf-8-sig’</em></strong>，这样存成的csv就可以用excel打开，而不乱码。</p>
+<p>关于编码知识，可以看这里：<a href="https://blog.csdn.net/u010223750/article/details/56684096/" target="_blank" rel="noopener">https://blog.csdn.net/u010223750/article/details/56684096/</a></p>
+<h3 id="1-5-乱入：用pandas进行onehot的神坑"><a href="#1-5-乱入：用pandas进行onehot的神坑" class="headerlink" title="1.5 乱入：用pandas进行onehot的神坑"></a>1.5 乱入：用pandas进行onehot的神坑</h3><p>机器学习特征工程中，经常会用到one-hot编码。并且pandas中已经提供了这一函数pandas.get_dummies()。<br><strong><em>但是使用这个函数进行one hot操作后得到的数据类型竟然是是uint8，如果进行数值计算时会溢出。</em></strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">data_df = pd.DataFrame(&#123;<span class="string">'sex'</span>: [<span class="string">'male'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'male'</span>, <span class="string">'female'</span>],</span><br><span class="line">                        <span class="string">'height'</span>: [<span class="number">182</span>, <span class="number">160</span>, <span class="number">176</span>, <span class="number">172</span>, <span class="number">174</span>, <span class="number">170</span>, <span class="number">155</span>],</span><br><span class="line">                        <span class="string">'weight'</span>: [<span class="number">65</span>, <span class="number">50</span>, <span class="number">55</span>, <span class="number">48</span>, <span class="number">48</span>, <span class="number">100</span>, <span class="number">80</span>],</span><br><span class="line">                        <span class="string">'is_air_hostesses'</span>: [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]&#125;)</span><br><span class="line">data_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>height</th>
+      <th>is_air_hostesses</th>
+      <th>sex</th>
+      <th>weight</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>182</td>
+      <td>1</td>
+      <td>male</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>160</td>
+      <td>1</td>
+      <td>female</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>176</td>
+      <td>1</td>
+      <td>female</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>172</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>174</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>170</td>
+      <td>0</td>
+      <td>male</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>155</td>
+      <td>0</td>
+      <td>female</td>
+      <td>80</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sex_one_hot_df = pd.get_dummies(data_df[<span class="string">'sex'</span>])</span><br><span class="line">sex_one_hot_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>female</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sex_one_hot_df.dtypes</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>female    uint8
+male      uint8
+dtype: object</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-sex_one_hot_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>female</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>255</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>255</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>255</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>255</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>255</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>255</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>255</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>这真的是一个神坑，如果特征比较多的话，根本发现不了。如果没有发现，后续如果做其他操的时候，就会出错。这个坑藏得深啊。</p>
+<p>正确的做法是转换一下数据类型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sex_one_hot_df = sex_one_hot_df.astype(<span class="string">'float'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-DataFrame-链式索引的坑"><a href="#2-DataFrame-链式索引的坑" class="headerlink" title="2. DataFrame 链式索引的坑"></a>2. DataFrame 链式索引的坑</h2><h3 id="2-1-解决：SettingWithCopyWarning"><a href="#2-1-解决：SettingWithCopyWarning" class="headerlink" title="2.1 解决：SettingWithCopyWarning:"></a>2.1 解决：SettingWithCopyWarning:</h3><p><strong>SettingWithCopyWarning</strong> 可能是人们在学习 Pandas 时遇到的最常见的障碍之一。<br>首先来看看，它出现的情况之一（其他情况大同小异）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sub_df = df.loc[df.a &gt; <span class="number">0.6</span>]</span><br><span class="line">sub_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.688818</td>
+      <td>0.510446</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.945565</td>
+      <td>0.801788</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sub_df[<span class="string">'c'</span>] = [<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+
+<pre><code>/Users/kk_j/anaconda3/envs/python2_for_project/lib/python2.7/site-packages/ipykernel_launcher.py:1: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  &quot;&quot;&quot;Entry point for launching an IPython kernel.</code></pre><p>没有出任何意外，SettingWithCopyWarning 出现。首先要理解的是，SettingWithCopyWarning 是一个警告 Warning，而不是错误 Error，它告诉你，你的操作可能没有按预期运行，需要检查结果以确保没有出错。<strong><em>当你查看结果，发现结果没有错，就是在按预期进行，你极有可能忽略这个Warning, 而当下次它再次出现时，你不会再检查，然后错误就出现了。</em></strong></p>
+<p>直接说他出现的原因，那就是<strong><em>链式索引产生的新的变量并没有在内存中创建副本，当接下来对新的变量进行修改时，有修改原数据的风险。</em></strong></p>
+<p>怎么解决呢。很简单,只需要在链式索引后面加上一个.copy() 即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sub_df = df.loc[df.a &gt; <span class="number">0.6</span>].copy()</span><br><span class="line">sub_df[<span class="string">'c'</span>] = [<span class="number">1</span>,<span class="number">2</span>]</span><br><span class="line">sub_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.688818</td>
+      <td>0.510446</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.945565</td>
+      <td>0.801788</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>再试试，可以看到没有再出现问题。</p>
+<p>但是我们也注意到，在Warning的提示里，提到：<strong>Try using .loc[row_indexer,col_indexer] = value instead</strong>。这也是一种解决办法，当你仅仅是想更改原始数据，你可以使用这个操作。</p>
+<p>对这个问题的详细原理讲解，请参考： <a href="https://www.dataquest.io/blog/settingwithcopywarning/" target="_blank" rel="noopener">https://www.dataquest.io/blog/settingwithcopywarning/</a></p>
+<h3 id="2-2-DataFrame-里存None：这个坑是真的坑"><a href="#2-2-DataFrame-里存None：这个坑是真的坑" class="headerlink" title="2.2 DataFrame 里存None：这个坑是真的坑"></a>2.2 DataFrame 里存None：这个坑是真的坑</h3><p>真的不好写开场白，直接上例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">v = &#123;<span class="string">'value'</span>: <span class="string">'a'</span>&#125;</span><br><span class="line">d = [&#123;<span class="string">'name'</span>: <span class="string">'class'</span>, <span class="string">'age'</span>: <span class="number">10</span>&#125;, &#123;<span class="string">'name'</span>: <span class="literal">None</span>, <span class="string">'age'</span>: <span class="number">11</span>&#125;, &#123;<span class="string">'name'</span>: <span class="string">'def'</span>, <span class="string">'age'</span>: <span class="number">9</span>&#125;]</span><br><span class="line">df = pd.DataFrame(d)</span><br><span class="line"></span><br><span class="line">new_1 = df[(df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>) | df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>])]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 颠倒里面条件的顺序</span></span><br><span class="line">new_2 = df[df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>]) | (df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>)]</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(df)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(new_1)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(new_2)</span><br></pre></td></tr></table></figure>
+
+<pre><code>----------------------------------------
+   age   name
+0   10  class
+1   11   None
+2    9    def
+----------------------------------------
+   age   name
+0   10  class
+1   11   None
+----------------------------------------
+   age   name
+0   10  class</code></pre><p>这。。。。。逻辑操作“或”俩边的条件对调下，结果也能不一样？一脸懵逼。</p>
+<p>但是接下来，我进行了简单的探索。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">'age'</span>] &gt;= <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0     True
+1     True
+2    False
+Name: age, dtype: bool</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0     True
+1     None
+2    False
+Name: name, dtype: object</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>) | df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>])</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0     True
+1     True
+2    False
+dtype: bool</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>]) | (df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>0     True
+1    False
+2    False
+dtype: bool</code></pre><p>这。。。。。。还是一脸懵逼。</p>
+<p><strong><em>百度了一圈，还是没有找到答案。但是找到了解决了办法：<br>把 None 改为了 ‘’ 就可以了。</em></strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">v = &#123;<span class="string">'value'</span>: <span class="string">'a'</span>&#125;</span><br><span class="line">d = [&#123;<span class="string">'name'</span>: <span class="string">'class'</span>, <span class="string">'age'</span>: <span class="number">10</span>&#125;, &#123;<span class="string">'name'</span>: <span class="string">''</span>, <span class="string">'age'</span>: <span class="number">11</span>&#125;, &#123;<span class="string">'name'</span>: <span class="string">'def'</span>, <span class="string">'age'</span>: <span class="number">9</span>&#125;]</span><br><span class="line">df = pd.DataFrame(d)</span><br><span class="line"></span><br><span class="line">new_1 = df[(df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>) | df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>])]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 颠倒里面条件的顺序</span></span><br><span class="line">new_2 = df[df[<span class="string">'name'</span>].str.contains(v[<span class="string">'value'</span>]) | (df[<span class="string">'age'</span>] &gt;= <span class="number">10</span>)]</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(df)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(new_1)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-'</span>*<span class="number">40</span>)</span><br><span class="line">print(new_2)</span><br></pre></td></tr></table></figure>
+
+<pre><code>----------------------------------------
+   age   name
+0   10  class
+1   11       
+2    9    def
+----------------------------------------
+   age   name
+0   10  class
+1   11       
+----------------------------------------
+   age   name
+0   10  class
+1   11       </code></pre><h3 id="2-3-这个坑不算坑"><a href="#2-3-这个坑不算坑" class="headerlink" title="2.3 这个坑不算坑"></a>2.3 这个坑不算坑</h3><p>这里就举个例子，自己体会：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> type(df[<span class="string">'age'</span>])</span><br><span class="line">df[<span class="string">'age'</span>]</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;class &apos;pandas.core.series.Series&apos;&gt;
+
+
+
+
+
+0    10
+1    11
+2     9
+Name: age, dtype: int64</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> type(df[[<span class="string">'age'</span>]])</span><br><span class="line">df[[<span class="string">'age'</span>]]</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;class &apos;pandas.core.frame.DataFrame&apos;&gt;</code></pre><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p><strong><em>前面是Series后面是DataFrame，这不知道算不算一个坑</em></strong></p>
+<h2 id="3-DataFrame-拼接里面的坑与技巧"><a href="#3-DataFrame-拼接里面的坑与技巧" class="headerlink" title="3. DataFrame 拼接里面的坑与技巧"></a>3. DataFrame 拼接里面的坑与技巧</h2><p>pandas 里多个DataFrame的拼接，主要是append， merge，concat，join四个函数。想详细了解的话看一下官方文档。</p>
+<p><strong><em>这里简单说一下concat和merge.</em></strong></p>
+<h3 id="3-1-concat：坑虽小，须谨慎"><a href="#3-1-concat：坑虽小，须谨慎" class="headerlink" title="3.1 concat：坑虽小，须谨慎"></a>3.1 concat：坑虽小，须谨慎</h3><p>解释这个坑，也只有靠例子。直接上代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">df1 = pd.DataFrame(&#123; <span class="string">'A'</span>: [<span class="string">'A0'</span>, <span class="string">'A1'</span>, <span class="string">'A2'</span>],</span><br><span class="line">                     <span class="string">'B'</span>: [<span class="string">'B0'</span>, <span class="string">'B1'</span>, <span class="string">'B2'</span>],</span><br><span class="line">                     <span class="string">'C'</span>: [<span class="string">'C0'</span>, <span class="string">'C1'</span>, <span class="string">'C2'</span>],</span><br><span class="line">                     <span class="string">'D'</span>: [<span class="string">'D0'</span>, <span class="string">'D1'</span>, <span class="string">'D2'</span>]&#125;)</span><br><span class="line">                     </span><br><span class="line">df2 = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'A4'</span>, <span class="string">'A5'</span>, <span class="string">'A6'</span>],</span><br><span class="line">                     <span class="string">'B'</span>: [<span class="string">'B4'</span>, <span class="string">'B5'</span>, <span class="string">'B6'</span>],</span><br><span class="line">                     <span class="string">'C'</span>: [<span class="string">'C4'</span>, <span class="string">'C5'</span>, <span class="string">'C6'</span>],</span><br><span class="line">                     <span class="string">'D'</span>: [<span class="string">'D4'</span>, <span class="string">'D5'</span>, <span class="string">'D6'</span>]&#125;)</span><br><span class="line">                     </span><br><span class="line">df3 = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'A8'</span>, <span class="string">'A9'</span>, <span class="string">'A10'</span>],</span><br><span class="line">                     <span class="string">'B'</span>: [<span class="string">'B8'</span>, <span class="string">'B9'</span>, <span class="string">'B10'</span>],</span><br><span class="line">                     <span class="string">'C'</span>: [<span class="string">'C8'</span>, <span class="string">'C9'</span>, <span class="string">'C10'</span>],</span><br><span class="line">                     <span class="string">'D'</span>: [<span class="string">'D8'</span>, <span class="string">'D9'</span>, <span class="string">'D10'</span>]&#125;)</span><br><span class="line"> </span><br><span class="line">frames = [df1, df2, df3]</span><br><span class="line">result = pd.concat(frames)</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A0</td>
+      <td>B0</td>
+      <td>C0</td>
+      <td>D0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A1</td>
+      <td>B1</td>
+      <td>C1</td>
+      <td>D1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A2</td>
+      <td>B2</td>
+      <td>C2</td>
+      <td>D2</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>A4</td>
+      <td>B4</td>
+      <td>C4</td>
+      <td>D4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A5</td>
+      <td>B5</td>
+      <td>C5</td>
+      <td>D5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A6</td>
+      <td>B6</td>
+      <td>C6</td>
+      <td>D6</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>A8</td>
+      <td>B8</td>
+      <td>C8</td>
+      <td>D8</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A9</td>
+      <td>B9</td>
+      <td>C9</td>
+      <td>D9</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A10</td>
+      <td>B10</td>
+      <td>C10</td>
+      <td>D10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df4 = pd.DataFrame(&#123;<span class="string">'val'</span>:[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>],<span class="string">'A'</span>: [<span class="string">'A0'</span>, <span class="string">'A1'</span>, <span class="string">'A2'</span>, <span class="string">'A3'</span>,<span class="string">'A4'</span>, <span class="string">'A5'</span>, <span class="string">'A6'</span>, <span class="string">'A7'</span>,<span class="string">'A8'</span>]&#125;)</span><br><span class="line">result[<span class="string">'val'</span>] = df4[<span class="string">'A'</span>]</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>val</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A0</td>
+      <td>B0</td>
+      <td>C0</td>
+      <td>D0</td>
+      <td>A0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A1</td>
+      <td>B1</td>
+      <td>C1</td>
+      <td>D1</td>
+      <td>A1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A2</td>
+      <td>B2</td>
+      <td>C2</td>
+      <td>D2</td>
+      <td>A2</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>A4</td>
+      <td>B4</td>
+      <td>C4</td>
+      <td>D4</td>
+      <td>A0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A5</td>
+      <td>B5</td>
+      <td>C5</td>
+      <td>D5</td>
+      <td>A1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A6</td>
+      <td>B6</td>
+      <td>C6</td>
+      <td>D6</td>
+      <td>A2</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>A8</td>
+      <td>B8</td>
+      <td>C8</td>
+      <td>D8</td>
+      <td>A0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A9</td>
+      <td>B9</td>
+      <td>C9</td>
+      <td>D9</td>
+      <td>A1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A10</td>
+      <td>B10</td>
+      <td>C10</td>
+      <td>D10</td>
+      <td>A2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p><strong><em>注意看最后一列 ‘val’ ，和我们预期（预期的是从 A0-A8 ）的真的不一样。原来赋值操作是按照index赋值的，结果就是这么出乎我们的意料。</em></strong></p>
+<p>其实，concat的时候加上参数 <strong><em>ignore_index=True</em></strong> 就好了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = pd.concat(frames, ignore_index=<span class="literal">True</span>)</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A0</td>
+      <td>B0</td>
+      <td>C0</td>
+      <td>D0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A1</td>
+      <td>B1</td>
+      <td>C1</td>
+      <td>D1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A2</td>
+      <td>B2</td>
+      <td>C2</td>
+      <td>D2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>A4</td>
+      <td>B4</td>
+      <td>C4</td>
+      <td>D4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>A5</td>
+      <td>B5</td>
+      <td>C5</td>
+      <td>D5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>A6</td>
+      <td>B6</td>
+      <td>C6</td>
+      <td>D6</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>A8</td>
+      <td>B8</td>
+      <td>C8</td>
+      <td>D8</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>A9</td>
+      <td>B9</td>
+      <td>C9</td>
+      <td>D9</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>A10</td>
+      <td>B10</td>
+      <td>C10</td>
+      <td>D10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result[<span class="string">'val'</span>] = df4[<span class="string">'A'</span>]</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>val</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>A0</td>
+      <td>B0</td>
+      <td>C0</td>
+      <td>D0</td>
+      <td>A0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>A1</td>
+      <td>B1</td>
+      <td>C1</td>
+      <td>D1</td>
+      <td>A1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>A2</td>
+      <td>B2</td>
+      <td>C2</td>
+      <td>D2</td>
+      <td>A2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>A4</td>
+      <td>B4</td>
+      <td>C4</td>
+      <td>D4</td>
+      <td>A3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>A5</td>
+      <td>B5</td>
+      <td>C5</td>
+      <td>D5</td>
+      <td>A4</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>A6</td>
+      <td>B6</td>
+      <td>C6</td>
+      <td>D6</td>
+      <td>A5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>A8</td>
+      <td>B8</td>
+      <td>C8</td>
+      <td>D8</td>
+      <td>A6</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>A9</td>
+      <td>B9</td>
+      <td>C9</td>
+      <td>D9</td>
+      <td>A7</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>A10</td>
+      <td>B10</td>
+      <td>C10</td>
+      <td>D10</td>
+      <td>A8</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3 id="3-2-merge：小众的技巧"><a href="#3-2-merge：小众的技巧" class="headerlink" title="3.2 merge：小众的技巧"></a>3.2 merge：小众的技巧</h3><p><a href="https://pandas.pydata.org/pandas-docs/version/0.23.4/generated/pandas.merge.html" target="_blank" rel="noopener">panda.merge</a> 这个是pandas最常用的操作之一，具体用法可以看官方文档。这里有个小的tricks, 在做一些统计分析的时候很有用。还是具体看例子吧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">left = pd.DataFrame(&#123;<span class="string">'key'</span>: [<span class="string">'key1'</span>, <span class="string">'key2'</span>, <span class="string">'key3'</span>, <span class="string">'key4'</span>], <span class="string">'val_l'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]&#125;)</span><br><span class="line">left</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>val_l</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>key1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>key2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>key3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>key4</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">right = pd.DataFrame(&#123;<span class="string">'key'</span>: [<span class="string">'key3'</span>, <span class="string">'key2'</span>, <span class="string">'key1'</span>, <span class="string">'key6'</span>], <span class="string">'val_r'</span>: [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">6</span>]&#125;)</span><br><span class="line">right</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>val_r</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>key3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>key2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>key1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>key6</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df_merge = pd.merge(left, right, on=<span class="string">'key'</span>, how=<span class="string">'left'</span>, indicator=<span class="literal">True</span>)</span><br><span class="line">df_merge</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>val_l</th>
+      <th>val_r</th>
+      <th>_merge</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>key1</td>
+      <td>1</td>
+      <td>1.0</td>
+      <td>both</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>key2</td>
+      <td>2</td>
+      <td>2.0</td>
+      <td>both</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>key3</td>
+      <td>3</td>
+      <td>3.0</td>
+      <td>both</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>key4</td>
+      <td>4</td>
+      <td>NaN</td>
+      <td>left_only</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p><strong>_merge 列不仅可以用来检查是否出现数值错误，还可以进行统计分析，比如：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df_merge[<span class="string">'_merge'</span>].value_counts()</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>both          3
+left_only     1
+right_only    0
+Name: _merge, dtype: int64</code></pre><h2 id="4-一些技巧"><a href="#4-一些技巧" class="headerlink" title="4. 一些技巧"></a>4. 一些技巧</h2><p>技巧总是讲不完，我这里随便再写点。</p>
+<h3 id="4-1-pandas-画图"><a href="#4-1-pandas-画图" class="headerlink" title="4.1 pandas 画图"></a>4.1 pandas 画图</h3><p>这个举个例子就好了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">df_merge.val_l.plot(kind=<span class="string">'bar'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<img src="https://gitee.com/jjkkk/cloud_img/raw/master/1911/output_74_0.png" alt>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data1.plot(kind=<span class="string">'scatter'</span>, x=<span class="string">'v_game_number'</span>, y=<span class="string">'v_score'</span>, alpha=<span class="number">0.1</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<img src="https://gitee.com/jjkkk/cloud_img/raw/master/1911/output_75_0.png" alt>
+
+
+<p>plot这个命令底层调用的就是matplotlib。必须事先装好matplotlib，不然会报错。</p>
+<p><strong><em>这里的 2 个例子只是抛砖引玉，真正的功能非常强大，有兴趣的小伙伴可以学习一下</em></strong></p>
+<h3 id="4-2-简单的相关性分析"><a href="#4-2-简单的相关性分析" class="headerlink" title="4.2 简单的相关性分析"></a>4.2 简单的相关性分析</h3><p>写到这里，写累了。不想去找数据集，还是用前面自己构造的数据集演示一下这个小技巧：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">data_df = pd.DataFrame(&#123;<span class="string">'sex'</span>: [<span class="string">'male'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'female'</span>, <span class="string">'male'</span>, <span class="string">'female'</span>],</span><br><span class="line">                        <span class="string">'height'</span>: [<span class="number">182</span>, <span class="number">160</span>, <span class="number">176</span>, <span class="number">172</span>, <span class="number">174</span>, <span class="number">170</span>, <span class="number">155</span>],</span><br><span class="line">                        <span class="string">'weight'</span>: [<span class="number">65</span>, <span class="number">50</span>, <span class="number">55</span>, <span class="number">48</span>, <span class="number">48</span>, <span class="number">100</span>, <span class="number">80</span>],</span><br><span class="line">                        <span class="string">'is_air_hostesses'</span>: [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]&#125;)</span><br><span class="line">data_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>height</th>
+      <th>is_air_hostesses</th>
+      <th>sex</th>
+      <th>weight</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>182</td>
+      <td>1</td>
+      <td>male</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>160</td>
+      <td>1</td>
+      <td>female</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>176</td>
+      <td>1</td>
+      <td>female</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>172</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>174</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>170</td>
+      <td>0</td>
+      <td>male</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>155</td>
+      <td>0</td>
+      <td>female</td>
+      <td>80</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data_df[[<span class="string">'sex'</span>, <span class="string">'is_air_hostesses'</span>]].groupby([<span class="string">'sex'</span>], as_index=<span class="literal">False</span>).mean().sort_values(by=<span class="string">'is_air_hostesses'</span>, ascending=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sex</th>
+      <th>is_air_hostesses</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>female</td>
+      <td>0.8</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>male</td>
+      <td>0.5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p><strong>* 可以看到女生做空乘的可能性更大一些 *</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data_df[<span class="string">'height_band'</span>] = pd.qcut(data_df[<span class="string">'height'</span>], <span class="number">2</span>)</span><br><span class="line">data_df</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>height</th>
+      <th>is_air_hostesses</th>
+      <th>sex</th>
+      <th>weight</th>
+      <th>height_band</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>182</td>
+      <td>1</td>
+      <td>male</td>
+      <td>65</td>
+      <td>(172.0, 182.0]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>160</td>
+      <td>1</td>
+      <td>female</td>
+      <td>50</td>
+      <td>(154.999, 172.0]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>176</td>
+      <td>1</td>
+      <td>female</td>
+      <td>55</td>
+      <td>(172.0, 182.0]</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>172</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+      <td>(154.999, 172.0]</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>174</td>
+      <td>1</td>
+      <td>female</td>
+      <td>48</td>
+      <td>(172.0, 182.0]</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>170</td>
+      <td>0</td>
+      <td>male</td>
+      <td>100</td>
+      <td>(154.999, 172.0]</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>155</td>
+      <td>0</td>
+      <td>female</td>
+      <td>80</td>
+      <td>(154.999, 172.0]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">data_df[[<span class="string">'height_band'</span>, <span class="string">'is_air_hostesses'</span>]].groupby([<span class="string">'height_band'</span>], as_index=<span class="literal">False</span>).mean().sort_values(by=<span class="string">'is_air_hostesses'</span>, ascending=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+<pre><code>.dataframe thead th {
+    text-align: left;
+}
+
+.dataframe tbody tr th {
+    vertical-align: top;
+}</code></pre><p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>height_band</th>
+      <th>is_air_hostesses</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>(172.0, 182.0]</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>(154.999, 172.0]</td>
+      <td>0.5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p><strong>这里可以看到身高大于172的是空乘的可能性更大一些</strong></p>
+<p>同样的也是为了抛砖引玉，不详细介绍了</p>
+<h2 id="5-结束语"><a href="#5-结束语" class="headerlink" title="5. 结束语"></a>5. 结束语</h2><p>写pandas的这些坑，只是为了更好的提高工作效率，有兴趣的小伙伴可以学一学，相信会很有帮助。</p>
+
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Code-Tool/">Code Tool</a>, <a class="article-category-link" href="/categories/Code-Tool/Code-%E6%80%BB%E7%BB%93/">Code 总结</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pandas/" rel="tag">Pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tool/" rel="tag">Tool</a></li></ul>
+
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+      
+        
+        <div id="vcomments"></div>
+		<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    		<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+	    	av: AV,
+                el: '#vcomments',
+                appId: '2D30CEQ8V1SWbAhEuhAVDLff-gzGzoHsz',
+                appKey: 'OoybxmzBIBcKIlDStoAh6dmV',
+		placeholder: 'email可选，填上昵称评论吧',
+		avatar: 'monsterid',
+		meta: ['nick', 'mail']
+            })
+	    //增加以下六行代码去除 power by valine
+    	var infoEle = document.querySelector('#vcomments .info');
+    	if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      		infoEle.childNodes.forEach(function(item) {
+        		item.parentNode.removeChild(item);
+      		});
+    	}	
+        </script>
+
+
+      
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/Git%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Git基本命令大全</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Pandas-IO中的坑"><span class="nav-number">1.</span> <span class="nav-text">1. Pandas IO中的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-解决读的坑，让pandas读文件内存占用减小-80"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 解决读的坑，让pandas读文件内存占用减小 80%</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-解决写的坑，让磁盘空间节约60"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 解决写的坑，让磁盘空间节约60%</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-解决写的坑，避免挖个坑"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 解决写的坑，避免挖个坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-python2：加上encoding，-读写好习惯"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 python2：加上encoding， 读写好习惯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-乱入：用pandas进行onehot的神坑"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 乱入：用pandas进行onehot的神坑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-DataFrame-链式索引的坑"><span class="nav-number">2.</span> <span class="nav-text">2. DataFrame 链式索引的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-解决：SettingWithCopyWarning"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 解决：SettingWithCopyWarning:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-DataFrame-里存None：这个坑是真的坑"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 DataFrame 里存None：这个坑是真的坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-这个坑不算坑"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 这个坑不算坑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-DataFrame-拼接里面的坑与技巧"><span class="nav-number">3.</span> <span class="nav-text">3. DataFrame 拼接里面的坑与技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-concat：坑虽小，须谨慎"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 concat：坑虽小，须谨慎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-merge：小众的技巧"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 merge：小众的技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-一些技巧"><span class="nav-number">4.</span> <span class="nav-text">4. 一些技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-pandas-画图"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 pandas 画图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-简单的相关性分析"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 简单的相关性分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-结束语"><span class="nav-number">5.</span> <span class="nav-text">5. 结束语</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2019 KK&#39;s Note All Rights Reserved.&nbsp;&nbsp;
+        
+            <span id="busuanzi_container_site_uv">
+              Unique Visitor: <span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;  
+              Page View: <span id="busuanzi_value_site_pv"></span>
+            </span>
+          
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>
+      </div>
+  </div>
+  <script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+<div style="display: none;">
+  <script src="https://s11.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+</div>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+</body>
+</html>
