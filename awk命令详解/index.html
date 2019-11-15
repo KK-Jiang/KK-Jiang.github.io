@@ -22,7 +22,7 @@
 <meta property="og:description" content="awk 其名称的由来很简单，就是由其三个创始人Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母组成。很多人都说它是一个效率神器，以前也多多少少用过它一些简单的用法。后来python一上手，pandas一用上，反而忘了它。正所谓技多不压身，这么高大上的程序语言（速度快，常用命令简单， 效率高），一定要学会它。所以这篇文章特将awk的基本语法">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1911&#x2F;awk_log.jpg">
-<meta property="og:updated_time" content="2019-11-13T14:02:00.111Z">
+<meta property="og:updated_time" content="2019-11-15T12:29:35.309Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;1911&#x2F;awk_log.jpg">
   
@@ -115,7 +115,7 @@
 <div class="article-gallery">
   <div class="article-gallery-photos">
     
-      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/1911/awk_log.jpg" target="_blank" rel="gallery_ck2xctk81000234vsgsdyb2bf noopener">
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/1911/awk_log.jpg" target="_blank" rel="gallery_ck304epjp0004q4vsbigh50vg noopener">
         <img src="https://gitee.com/jjkkk/cloud_img/raw/master/1911/awk_log.jpg" itemprop="image">
       </a>
     
@@ -160,8 +160,52 @@
 <p>举个例子：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'&#123;print $1&#125;'</span> demo.txt</span><br></pre></td></tr></table></figure>
 <p>awk的命令一般写在花括号里，但是花括号并不是必须的，某些情况下它可以省略，或者压根不需要。下面看具体讲解和实例。</p>
-<h1 id="2-基本用法"><a href="#2-基本用法" class="headerlink" title="2.基本用法"></a>2.基本用法</h1><h2 id="2-1-awk内置变量"><a href="#2-1-awk内置变量" class="headerlink" title="2.1 awk内置变量"></a>2.1 awk内置变量</h2><p>前面说了，awk一般以行为单位进行处理，下表中的<strong>记录行</strong>即表示文件的一行，这是默认情况下以换行符作为判断为一行的标志，当然也可以手动修改以其他字符作为换行标志。下表中的字段可以理解为使用分隔符分隔记录行后的每一个元素。<br>以下是awk内置变量及其含义：<br>|  变量名| 含义 |<br>|–|–|<br>| $0 | 当前记录行 |<br>|$1 ~ $n|当对当前记录行进行分隔时，表示分隔后第几个字段|<br>|FS|字段分隔符，默认是空格|<br>|RS|记录行分隔符，默认为换行符|<br>|NF|对记录行进行分隔后，字段的个数|<br>|NR|已经读出对记录数，从1开始，多个文件时继续累加计数|<br>|FNR|已经读出对记录数，从1开始，多个文件时每个文件单独计数|<br>|ORS|输出时的记录行分隔符， 默认是换行符|<br>|OFS|输出时的字段分隔符， 默认是空格|</p>
-<h2 id="2-2-n、-F、FS、RS"><a href="#2-2-n、-F、FS、RS" class="headerlink" title="2.2 $n、-F、FS、RS"></a>2.2 $n、-F、FS、RS</h2><p>首先看<strong>$0 ~ $n 和 -F</strong> 的例子：</p>
+<h1 id="2-基本用法"><a href="#2-基本用法" class="headerlink" title="2.基本用法"></a>2.基本用法</h1><h2 id="2-1-awk内置变量"><a href="#2-1-awk内置变量" class="headerlink" title="2.1 awk内置变量"></a>2.1 awk内置变量</h2><p>前面说了，awk一般以行为单位进行处理，下表中的<strong>记录行</strong>即表示文件的一行，这是默认情况下以换行符作为判断为一行的标志，当然也可以手动修改以其他字符作为换行标志。下表中的字段可以理解为使用分隔符分隔记录行后的每一个元素。<br>以下是awk内置变量及其含义：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$0</td>
+<td>当前记录行</td>
+</tr>
+<tr>
+<td>$1 ~ $n</td>
+<td>当对当前记录行进行分隔时，表示分隔后第几个字段</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>字段分隔符，默认是空格</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>记录行分隔符，默认为换行符</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>对记录行进行分隔后，字段的个数</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>已经读出对记录数，从1开始，多个文件时继续累加计数</td>
+</tr>
+<tr>
+<td>FNR</td>
+<td>已经读出对记录数，从1开始，多个文件时每个文件单独计数</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出时的记录行分隔符， 默认是换行符</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出时的字段分隔符， 默认是空格</td>
+</tr>
+</tbody></table>
+<h2 id="2-2-n、-F、FS、RS"><a href="#2-2-n、-F、FS、RS" class="headerlink" title="2.2 $n、-F、FS、RS"></a>2.2 $n、-F、FS、RS</h2><p>首先看 <strong>$0 ~ $n 和 -F</strong> 的例子：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; cat awk_test.txt</span><br><span class="line">a,b,c,d</span><br><span class="line">e,f,g,h</span><br><span class="line"></span><br><span class="line">&gt;&gt; awk <span class="string">'&#123;print $0&#125;'</span> awk_test.txt <span class="comment"># 实例1</span></span><br><span class="line">a,b,c,d</span><br><span class="line">e,f,g,h</span><br><span class="line">&gt;&gt; awk -F <span class="string">','</span> <span class="string">'&#123;print $1,$2,$3,$4&#125;'</span> awk_test.txt <span class="comment"># 实例2</span></span><br><span class="line">a b c d</span><br><span class="line">e f g h</span><br></pre></td></tr></table></figure>
 <p>这里的 ‘-F’ 命令用于定义按什么进行分隔，功能同python里的split。‘$0’ 表示整个记录行（实例1），‘$1,$2,$3,$4’表示分隔后的每个元素。</p>
 <p>再继续来看<strong>FS和RS</strong>：</p>
@@ -183,7 +227,36 @@
 <p>下面这个例子的作用是统计某个文件夹下的文件占用的字节数：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; ll |awk <span class="string">'BEGIN &#123;size=0&#125; &#123;size=size+$5&#125; END&#123;print "[end]size is ",size/2014/1024, "M"&#125;'</span></span><br><span class="line">[end]size is 3.3 M</span><br></pre></td></tr></table></figure>
 <p>这样一个简单的例子信息量还是挺丰富的。首先可以看到所有的命令都在 ‘ ’ 里，BEGIN and END 以及记录行正常的操作部分，都有单独的代码块，用 {} 区分。另外我们可以看到，awk支持自定义变量，还可以进行各种运算。实际上awk也是一个轻量级的编程语言。这里代码“BEGIN {size=0}”可以省略，awk默认size=0.</p>
-<h3 id="2-5-2-awk运算符"><a href="#2-5-2-awk运算符" class="headerlink" title="2.5.2 awk运算符"></a>2.5.2 awk运算符</h3><p>既然awk也算是一个编程语言，那自然支持各种运算。如下表所示：<br>|  运算符| 解释 |<br>|–|–|<br>| =、+、-、+=、-=、<em>=、/=、%=、*</em>=、++、–等| 赋值及数学运算 |<br>|||、&amp;&amp;|逻辑或、逻辑与|<br>|&lt;、&lt;=、&gt;、&gt;=、!=、==|关系运算符|<br>|?:|三目运算符|<br>|in|数组中是否存在某键值|<br>随便举个例子，其余的看看就好：</p>
+<h3 id="2-5-2-awk运算符"><a href="#2-5-2-awk运算符" class="headerlink" title="2.5.2 awk运算符"></a>2.5.2 awk运算符</h3><p>既然awk也算是一个编程语言，那自然支持各种运算。如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>=、+、-、+=、-=、<em>=、/=、%=、*</em>=、++、–等</td>
+<td>赋值及数学运算</td>
+</tr>
+<tr>
+<td>||、&amp;&amp;</td>
+<td>逻辑或、逻辑与</td>
+</tr>
+<tr>
+<td>&lt;、&lt;=、&gt;、&gt;=、!=、==</td>
+<td>关系运算符</td>
+</tr>
+<tr>
+<td>?:</td>
+<td>三目运算符</td>
+</tr>
+<tr>
+<td>in</td>
+<td>数组中是否存在某键值</td>
+</tr>
+</tbody></table>
+<p>随便举个例子，其余的看看就好：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; awk <span class="string">'BEGIN&#123;a="b";print a=="b"?"ok":"err"&#125;'</span></span><br><span class="line">ok</span><br><span class="line">&gt;&gt; awk <span class="string">'BEGIN&#123;a="b";print a=="c"?"ok":"err"&#125;'</span></span><br><span class="line">err</span><br></pre></td></tr></table></figure>
 <h3 id="2-5-3-awk-数组和循环"><a href="#2-5-3-awk-数组和循环" class="headerlink" title="2.5.3 awk 数组和循环"></a>2.5.3 awk 数组和循环</h3><p>awk的循环包含while、do…while、for循环。这里不介绍了。具体可看链接：<a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">https://www.cnblogs.com/ginvip/p/6352157.html</a></p>
 <p>说说数组。awk的数组像极了python里的dict。有数组的地方，常常也有循环，当然这不是绝对的。<br>这次的实例使用一个真实的log文件，先看看log前2行长什么样（涉及到实际业务，做了一些处理）：</p>
@@ -217,7 +290,8 @@
 <li><p>grep -v  实现反向操作。例如方法1中命令 ls | grep -vE “txt|black” 实现了搜索名称中既不包含txt也不包含black的文件。</p>
 </li>
 <li><p>egrep 等同于‘grep -E’</p>
-<p>看了上面的grep的简介，方法1和方法2实际上是一样的。再来看后面的 “mv “ $0 “ “ $0 “.txt” 部分。这里假如 $0 = “a”, 那么”mv “ $0 “ “ $0 “.txt”=”mv a a.txt”.这里需要注意的是空格，一定要记得打上。<br>再来看方法3，既然awk也有正则匹配， 那就完全可以省去grep，直接用awk的正则去筛选满足条件的文件名。命令 ‘$0 !~/txt|black/‘ 即实现了相同的效果。可以看一下上一节的规则。</p>
+<p>看了上面的grep的简介，方法1和方法2实际上是一样的。再来看后面的 “mv “ $0 “ “ $0 “.txt” 部分。这里假如$0 = “a”, 那么”mv “ $0 “ “ $0 “.txt”=”mv a a.txt”.这里需要注意的是空格，一定要记得打上。</p>
+<p>再来看方法3，既然awk也有正则匹配， 那就完全可以省去grep，直接用awk的正则去筛选满足条件的文件名。命令 ‘$0 !~/txt|black/‘ 即实现了相同的效果。可以看一下上一节的规则。</p>
 </li>
 </ul>
 <p>到这里，over！有不对的地方，欢迎提出来。</p>
