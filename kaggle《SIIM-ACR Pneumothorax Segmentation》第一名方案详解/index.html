@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解 | KK&#39;s Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="AI医疗Pneumothorax Segmentation" />
+  
+  
+  
+    <meta name="baidu-site-verification" content="true" />
+  
+  
+  <meta name="description" content="当初刷微博无意中看到这个比赛，内容和自己所在团队的工作内容很契合，就花了点时间学习了下第一名的方案。在这里把自己学习的成果记录下来，也希望和大家一起讨论学习。">
+<meta name="keywords" content="AI医疗,Pneumothorax Segmentation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解">
+<meta property="og:url" content="https:&#x2F;&#x2F;jkknotes.com&#x2F;kaggle%E3%80%8ASIIM-ACR%20Pneumothorax%20Segmentation%E3%80%8B%E7%AC%AC%E4%B8%80%E5%90%8D%E6%96%B9%E6%A1%88%E8%AF%A6%E8%A7%A3&#x2F;index.html">
+<meta property="og:site_name" content="KK&#39;s Note">
+<meta property="og:description" content="当初刷微博无意中看到这个比赛，内容和自己所在团队的工作内容很契合，就花了点时间学习了下第一名的方案。在这里把自己学习的成果记录下来，也希望和大家一起讨论学习。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200112&#x2F;timg.jpg">
+<meta property="og:updated_time" content="2020-01-16T15:20:54.876Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200112&#x2F;timg.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
+  
+  <link rel="icon" href="/css/images/favicon.ico">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+  <link rel="stylesheet" href="/css/fashion.css" >
+  <link rel="stylesheet" href="/css/glyphs.css" >
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   >
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
+            
+          </h1>
+          
+          
+            <div class="site-description">WRITE AND DO BETTER</div>
+          
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/archives">Archives</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+<div class="article-gallery">
+  <div class="article-gallery-photos">
+    
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200112/timg.jpg" target="_blank" rel="gallery_ck5gvt7x30006l8vsalpm8dlj noopener">
+        <img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/timg.jpg" itemprop="image">
+      </a>
+    
+  </div>
+</div>
+
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/kaggle%E3%80%8ASIIM-ACR%20Pneumothorax%20Segmentation%E3%80%8B%E7%AC%AC%E4%B8%80%E5%90%8D%E6%96%B9%E6%A1%88%E8%AF%A6%E8%A7%A3/" class="article-date">
+	  <time datetime="2020-01-16T11:30:29.000Z" itemprop="datePublished">January 16, 2020</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Deep-Learning/">Deep Learning</a>, <a class="article-category-link" href="/categories/Deep-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
+ 
+      
+	<span id="busuanzi_container_page_pv">
+	  VISITORS<span id="busuanzi_value_page_pv"></span>
+	</span>
+
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>当初刷微博无意中看到这个比赛，内容和自己所在团队的工作内容很契合，就花了点时间学习了下第一名的方案。在这里把自己学习的成果记录下来，也希望和大家一起讨论学习。<a id="more"></a></p>
+</blockquote>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>引用一段比赛页面对这个比赛的介绍：</p>
+<blockquote>
+<p>“Pneumothorax can be caused by a blunt chest injury, damage from underlying lung disease, or most horrifying—it may occur for no obvious reason at all. On some occasions, a collapsed lung can be a life-threatening event.</p>
+</blockquote>
+<blockquote>
+<p>Pneumothorax is usually diagnosed by a radiologist on a chest x-ray, and can sometimes be very difficult to confirm. An accurate AI algorithm to detect pneumothorax would be useful in a lot of clinical scenarios. AI could be used to triage chest radiographs for priority interpretation, or to provide a more confident diagnosis for non-radiologists.”</p>
+</blockquote>
+<p>比赛地址：<a href="https://www.kaggle.com/c/siim-acr-pneumothorax-segmentation/overview/description" target="_blank" rel="noopener">SIIM-ACR Pneumothorax Segmentation</a></p>
+<p>Data: </p>
+<ul>
+<li><p>10679份dicom文件（站立位胸片），有气胸：无气胸 = 2379:8300</p>
+</li>
+<li><p>有气胸的胸片皆有mask, run-length-encoded (RLE)格式</p>
+</li>
+<li><p>一个胸片如果有多处气胸，会有多个单独的mask</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg1.png" alt="数据示例"></p>
+<p>Evaluation: Dice coefficient:</p>
+<p>$$\frac {2*|X \bigcap Y|}{|X|+|Y|}$$</p>
+<h1 id="2-OverView"><a href="#2-OverView" class="headerlink" title="2 OverView"></a>2 OverView</h1><p>用一张图来表示作者的思路：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg2_0.png" alt=""></p>
+<p>作者在训练模型时，采用5折交叉验证，并将模型训练分成了4个阶段（下文中分别表示成part0，part1，part2，part3），每个阶段都是上图中这样一个完整的过程，后一阶段直接在前一阶段的最优模型上fine-tuning.每一个阶段有不同的数据构成和模型参数。</p>
+<h1 id="3-Input-Data"><a href="#3-Input-Data" class="headerlink" title="3 Input Data"></a>3 Input Data</h1><h2 id="3-1-Data-Augmentation"><a href="#3-1-Data-Augmentation" class="headerlink" title="3.1 Data Augmentation"></a>3.1 Data Augmentation</h2><p>这里模型的输入是1024X1024X3的胸片和1024X1024X1的mask。作者直接使用了图像增强库 <a href="https://albumentations.readthedocs.io/en/latest/" target="_blank" rel="noopener">albumentations</a> 对数据进行增强，作者使用了一个较为复杂的方案：以固定顺序对图像进行不同的变换，并且给予每种方法一定的概率，使增强方法的运用随机化。具体如下:</p>
+<ol>
+<li>HorizontalFlip：0.5</li>
+<li>OneOf：0.3<ol>
+<li>RandomContrast：0.5</li>
+<li>RandomGamma：0.5</li>
+<li>RandomBrightness：0.5</li>
+</ol>
+</li>
+<li>OneOf：0.3<ol>
+<li>ElasticTransform：0.5</li>
+<li>GridDistortion：0.5</li>
+<li>OpticalDistortion：0.5</li>
+</ol>
+</li>
+<li>ShiftScaleRotate：0.5</li>
+</ol>
+<p>上面小数表示此增强方法运用的概率，OneOf表示在其子方法中选择一个。</p>
+<p>需要注意的是，这里有2个OneOf，第一个OneOf下面的增强方法主要对图像的亮度、对比度等进行调整，而第二个OneOf下面的增强方法主要对图像的形状进行调整。可以看几个例子。</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg2.png" alt="图像增强示例1"></p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg3.png" alt="图像增强示例2"></p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg4.png" alt="图像增强示例3"></p>
+<p>因为训练模型分成四个阶段，每个阶段使用的数据是一样的，使用一定概率给图像做增强，实际上保证了每个阶段实际参加训练的数据都不完全一样。</p>
+<h2 id="3-2-Sliding-Sample"><a href="#3-2-Sliding-Sample" class="headerlink" title="3.2 Sliding Sample"></a>3.2 Sliding Sample</h2><p>对无气胸的样本随机下采样，使有气胸的样本占0.8（part0），0.6（part1），0.4（part2），0.5（part3）</p>
+<h1 id="4-Model"><a href="#4-Model" class="headerlink" title="4 Model"></a>4 Model</h1><h2 id="4-1-Model-Zoo"><a href="#4-1-Model-Zoo" class="headerlink" title="4.1 Model Zoo"></a>4.1 Model Zoo</h2><ul>
+<li>Albunet: UNet <a href="https://arxiv.org/abs/1505.04597" target="_blank" rel="noopener">(论文链接)</a> with Resnet34<a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">(论文链接)</a> encoder proposed by Alexander Buslaev</li>
+</ul>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg5.png" alt="网络结构"></p>
+<p>UNet简直是图像分割的神器，特别是在医疗图像分割的上，目前其各种变体网络仍是各种比赛的主力。Unet主要有2个特点：<strong>1.U型结构；2.skip connection.</strong></p>
+<p>– U型结构encoder的下采样和decoder的上采样的次数相同，这就保证了模型的输出恢复到原图片的分辨率，实现端到端的预测。</p>
+<p>– skip connection的结构使模型结合不同level的feature map上进行学习，相比于FCN分割边缘更清晰。</p>
+<p>同时Albunet的网络的encoder使用的是ResNet，其由何凯明大佬于2015年提出（Unet也是这一年提出，回过头看，这一年真的是丰收的一年），同样风靡至今。从理论上讲，越高级的特征，应该有越强的表征能力，而VGG网络证明，网络的深度对特征的表达能力至关重要。</p>
+<p>理想情况下，当我们直接对网络进行简单的堆叠到特别长，网络内部的特征在其中某一层已经达到了最佳的情况，这时候剩下层应该不对改特征做任何改变，自动学成恒等映射的形式。也就是说，对一个特别深的深度网络而言，该网络的浅层形式的解空间应该是这个深度网络解空间的子集，但实际上，如果使用简单是网络堆叠，由于网络性能衰减，网络的效果反而越差。为了深度网络后面的层至少实现恒等映射的作用，作者提出了residual模块。</p>
+<p>除了Albunet，作者还尝试了如下2种网络进行实验：</p>
+<ul>
+<li><p>Resnet50: <a href="https://github.com/SpaceNetChallenge/SpaceNet_Off_Nadir_Solutions/tree/master/selim_sef/zoo" target="_blank" rel="noopener">GitHub链接</a></p>
+</li>
+<li><p>SCSEUnet：也就是SENet(<a href="https://arxiv.org/abs/1709.01507v1" target="_blank" rel="noopener">(论文：squeeze-and-excitation network)</a>)</p>
+</li>
+</ul>
+<h2 id="4-2-Loss-Function"><a href="#4-2-Loss-Function" class="headerlink" title="4.2 Loss Function"></a>4.2 Loss Function</h2><p>作者使用BCE，Dice和Focal loss加权的方式作为最终的损失函数：</p>
+<p>$$Loss = W_1 * StableBCELoss + W_2 * DiceLoss + W_3 * FocalLoss2d()$$</p>
+<p>这里需要注意的是，损失函数StableBCELoss的输入是没有进行sigmoid计算的模型输出，而其他2个损失函数的输入是经过sigmoid计算的模型输出。作者使用这三个损失函数，是想从三个维度驱动网络学习。</p>
+<p>– Focal loss主要解决正负样本失衡的问题，在医学图像分割的这种像素级分类的任务中，往往都是正样本较少，负样本较多，气胸的分割同样不例外。其公式如下：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg9.png" alt=""></p>
+<p>从如上公式上可以看到，某个样本输出的概率越高，其产生的loss越小，实际上达到了促使网络学习困难样本的目的（在分割任务中，目标像素就是困难样本，因为其数量较少）。</p>
+<p>– Dice loss在很多关于医学图像分割的竞赛、论文和项目中出现的频率很高，此比赛的评价指标也是它。从前文它的公式可以看到，其表示的是预测的轮廓与真实的mask的相似程度。其公式如下：</p>
+<p>$$DiceLoss = 1 - \frac {2*|X \bigcap Y|}{|X|+|Y|}$$</p>
+<p>– StableBCELoss, 这里非常奇怪的是，其输入是没有进行sigmoid计算的模型输出，至今没想通（to do：等搞明白了补上）。这里附上pytorch文档中其公式：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg10.png" alt=""></p>
+<p>最终作者寻优，得到各个损失函数的权重如下：</p>
+<ul>
+<li><p>(3,1,4) for albunet_valid and seunet;</p>
+</li>
+<li><p>(1,1,1) for albunet_public;</p>
+</li>
+<li><p>(2,1,2) for resnet50.</p>
+</li>
+</ul>
+<h2 id="4-3-Learn-Rate-Scheduler"><a href="#4-3-Learn-Rate-Scheduler" class="headerlink" title="4.3 Learn Rate Scheduler"></a>4.3 Learn Rate Scheduler</h2><p>作者在不同的训练阶段，采用了不同的学习率调整策略，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Start Lr</th>
+<th>Scheduler</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>part0</td>
+<td>1e-4</td>
+<td>ReduceLROnPlateau</td>
+</tr>
+<tr>
+<td>part1</td>
+<td>1e-5</td>
+<td>ReduceLROnPlateau or CosineAnnealingWarmRestarts</td>
+</tr>
+<tr>
+<td>part2</td>
+<td>1e-5</td>
+<td>ReduceLROnPlateau or CosineAnnealingWarmRestarts</td>
+</tr>
+<tr>
+<td>part3</td>
+<td>1e-6</td>
+<td>ReduceLROnPlateauor CosineAnnealingWarmRestarts</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-1-torch-optim-lr-scheduler-ReduceLROnPlateau"><a href="#4-3-1-torch-optim-lr-scheduler-ReduceLROnPlateau" class="headerlink" title="4.3.1 torch.optim.lr_scheduler.ReduceLROnPlateau"></a>4.3.1 torch.optim.lr_scheduler.ReduceLROnPlateau</h3><p>其基本思想是：当参考的评价指标停止变优时,降低学习率，挺实用的方法。</p>
+<p>Code Example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">optimizer = torch.optim.SGD(model.parameters(), lr=<span class="number">0.1</span>, momentum=<span class="number">0.9</span>)</span><br><span class="line">scheduler = ReduceLROnPlateau(optimizer, <span class="string">'min'</span>)</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">     train(...)</span><br><span class="line">     val_loss = validate(...)</span><br><span class="line">     <span class="comment"># Note that step should be called after validate()</span></span><br><span class="line">     scheduler.step(val_loss)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-2-torch-optim-lr-scheduler-CosineAnnealingLR"><a href="#4-3-2-torch-optim-lr-scheduler-CosineAnnealingLR" class="headerlink" title="4.3.2 torch.optim.lr_scheduler.CosineAnnealingLR"></a>4.3.2 torch.optim.lr_scheduler.CosineAnnealingLR</h3><p>可以翻译为余弦退火调整学习率：根据论文<a href="https://arxiv.org/abs/1608.03983" target="_blank" rel="noopener">SGDR: Stochastic Gradient Descent with Warm Restarts</a>而来，只包含论文里余弦退火部分，并不包含restart部分。</p>
+<p>当使用SGD时，模型的Loss应越来约接近全局最小值。当它逐渐接近这个最小值时，学习率应该变得更小来使得模型尽可能接近这一点。</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg11.png" alt="网上随便找了个图"></p>
+<p>从上图可以看出，随着x的增加，余弦值首先缓慢下降，然后加速下降，再次缓慢下降。这种下降模式能和学习率配合，比较有效的训练模型。</p>
+<h3 id="4-3-3-torch-optim-lr-scheduler-CosineAnnealingWarmRestarts"><a href="#4-3-3-torch-optim-lr-scheduler-CosineAnnealingWarmRestarts" class="headerlink" title="4.3.3 torch.optim.lr_scheduler.CosineAnnealingWarmRestarts"></a>4.3.3 torch.optim.lr_scheduler.CosineAnnealingWarmRestarts</h3><p>SGDR：这个方法就是论文<a href="https://arxiv.org/abs/1608.03983" target="_blank" rel="noopener">SGDR: Stochastic Gradient Descent with Warm Restarts</a>的完整实现。</p>
+<p>在训练时，梯度下降算法可能陷入局部最小值，而不是全局最小值。做随机梯度下降时可以通过突然提高学习率，来“跳出”局部最小值并找到通向全局最小值的路径。具体可以看下图：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg12.png" alt="网上随便找了个图"></p>
+<h1 id="5-Post-Proprecess"><a href="#5-Post-Proprecess" class="headerlink" title="5 Post Proprecess"></a>5 Post Proprecess</h1><p>我们训练的分割模型输出每个像素的0-1概率，然后卡一下阈值，我们可以称这样的mask为basic sigmoid mask, 实际上医学图像中我们的分割目标也许并不存在，所以常用双重阈值（top_score_threshold, min_contour_area）的方法计算出mask并同时判断是否有分割目标（在本次比赛中我们分割目标是气胸），这种方法且称为doublet。其具体逻辑为：当大于概率阈值top_score_threshold的pixel数少于<br>min_contour_area，就将mask像素值全部置0，也就是认为此胸片没有气胸。简单画个示意图如下：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg6.png" alt="Doublet E.G1"></p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg7.png" alt="Doublet E.G2"></p>
+<p>而作者在此基础上作了改进，使用了三重阈值（top_score_threshold, min_contour_area, bottom_score_threshold）的方法来达到相同的目标，且称改进后的方法为Triplet.其具体逻辑为：当大于概率阈值top_score_threshold的pixel数少于<br>min_contour_area，就将此mask pixel值全部置0，也就是认为此胸片没有气胸，然后再使用阈值bottom_score_threshold产生真正的mask。简单画个示意图如下：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/p_seg8.png" alt="Triplet"></p>
+<p>最终作者通过搜索，分别获得了在validation和在Public Leaderboard上的最优参数：</p>
+<ul>
+<li>Best triplet on validation: (0.75, 2000, 0.3).</li>
+<li>Best triplet on Public Leaderboard: (0.7, 600, 0.3)</li>
+</ul>
+<p>最后再附上作者的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classification_mask = predicted &gt; top_score_threshold</span><br><span class="line">mask = predicted.copy()</span><br><span class="line">mask[classification_mask.sum(axis=(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)) &lt; min_contour_area, :,:,:] = np.zeros_like(predicted[<span class="number">0</span>])</span><br><span class="line">mask = mask &gt; bot_score_threshold</span><br><span class="line"><span class="keyword">return</span> mask</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-Train-and-Inference"><a href="#6-Train-and-Inference" class="headerlink" title="6 Train and Inference"></a>6 Train and Inference</h1><h2 id="6-1-Train"><a href="#6-1-Train" class="headerlink" title="6.1 Train"></a>6.1 Train</h2><p>前面就已经提到过，作者将训练过程分为了4个阶段，这里在最前面新加一个预训练阶段。梳理如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Phase</th>
+<th align="left">Sample rate</th>
+<th align="left">Start lr</th>
+<th align="left">Scheduler</th>
+<th align="left">Epochs</th>
+<th align="left">Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">part pre</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">The model be pretrained on our dataset with lower resolution (512x512)</td>
+</tr>
+<tr>
+<td align="left">part0</td>
+<td align="left">0.8</td>
+<td align="left">1e-4</td>
+<td align="left">ReduceLROnPlateau</td>
+<td align="left">10-12</td>
+<td align="left">The goal of this part: quickly get a good enough model with validation score about 0.835</td>
+</tr>
+<tr>
+<td align="left">part1</td>
+<td align="left">0.6</td>
+<td align="left">1e-5</td>
+<td align="left">ReduceLROnPlateau or CosineAnnealingWarmRestarts</td>
+<td align="left">Repeat until best convergence</td>
+<td align="left">uptrain the best model from the previous step</td>
+</tr>
+<tr>
+<td align="left">part2</td>
+<td align="left">0.4</td>
+<td align="left">1e-5</td>
+<td align="left">ReduceLROnPlateau or CosineAnnealingWarmRestarts</td>
+<td align="left">Repeat until best convergence</td>
+<td align="left">uptrain the best model from the previous step</td>
+</tr>
+<tr>
+<td align="left">part3</td>
+<td align="left">0.5</td>
+<td align="left">1e-6</td>
+<td align="left">ReduceLROnPlateauor CosineAnnealingWarmRestarts</td>
+<td align="left">Repeat until best convergence</td>
+<td align="left">uptrain the best model from the previous step</td>
+</tr>
+</tbody></table>
+<h2 id="6-2-Inference"><a href="#6-2-Inference" class="headerlink" title="6.2 Inference"></a>6.2 Inference</h2><p>作者采用五折交叉验证训练模型，并选择每一个fold的top3个模型的结果求平均输出最终的mask。这里的求平均每个像素点的概率求平均。模型的最终效果如下表：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200112/dashboard.png" alt=""></p>
+<p>NOTE：</p>
+<ul>
+<li><p>albunet_public - best model for Public Leaderboard</p>
+</li>
+<li><p>albunet_valid - best resnet34 model on validation</p>
+</li>
+<li><p>seunet - best seresnext50 model on validation</p>
+</li>
+<li><p>resnet50 - best resnet50 model on validation</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Deep-Learning/">Deep Learning</a>, <a class="article-category-link" href="/categories/Deep-Learning/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AI%E5%8C%BB%E7%96%97/" rel="tag">AI医疗</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pneumothorax-Segmentation/" rel="tag">Pneumothorax Segmentation</a></li></ul>
+
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+      
+        
+        <div id="vcomments"></div>
+		<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    		<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+	    	av: AV,
+                el: '#vcomments',
+                appId: '2D30CEQ8V1SWbAhEuhAVDLff-gzGzoHsz',
+                appKey: 'OoybxmzBIBcKIlDStoAh6dmV',
+		placeholder: 'email可选，填上昵称评论吧',
+		avatar: 'monsterid',
+		meta: ['nick', 'mail']
+            })
+	    //增加以下六行代码去除 power by valine
+    	var infoEle = document.querySelector('#vcomments .info');
+    	if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      		infoEle.childNodes.forEach(function(item) {
+        		item.parentNode.removeChild(item);
+      		});
+    	}	
+        </script>
+
+
+      
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/awk%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">awk命令详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.</span> <span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-OverView"><span class="nav-number">2.</span> <span class="nav-text">2 OverView</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Input-Data"><span class="nav-number">3.</span> <span class="nav-text">3 Input Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Data-Augmentation"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Data Augmentation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Sliding-Sample"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Sliding Sample</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Model"><span class="nav-number">4.</span> <span class="nav-text">4 Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-Model-Zoo"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Model Zoo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-Loss-Function"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 Loss Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-Learn-Rate-Scheduler"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 Learn Rate Scheduler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-1-torch-optim-lr-scheduler-ReduceLROnPlateau"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1 torch.optim.lr_scheduler.ReduceLROnPlateau</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-2-torch-optim-lr-scheduler-CosineAnnealingLR"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2 torch.optim.lr_scheduler.CosineAnnealingLR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-3-torch-optim-lr-scheduler-CosineAnnealingWarmRestarts"><span class="nav-number">4.3.3.</span> <span class="nav-text">4.3.3 torch.optim.lr_scheduler.CosineAnnealingWarmRestarts</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Post-Proprecess"><span class="nav-number">5.</span> <span class="nav-text">5 Post Proprecess</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Train-and-Inference"><span class="nav-number">6.</span> <span class="nav-text">6 Train and Inference</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-Train"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 Train</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-Inference"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 Inference</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 KK&#39;s Note All Rights Reserved.&nbsp;&nbsp;
+        
+            <span id="busuanzi_container_site_uv">
+              Unique Visitor: <span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;  
+              Page View: <span id="busuanzi_value_site_pv"></span>
+            </span>
+          
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>
+      </div>
+  </div>
+  <script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+<div style="display: none;">
+  <script src="https://s11.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+</div>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+</body>
+</html>
