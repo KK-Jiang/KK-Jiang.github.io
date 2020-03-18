@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>特征选择方法详解Part1-方差分析、Pearson、Spearman | KK&#39;s Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="特征工程特征选择PearsonSpearman" />
+  
+  
+  
+    <meta name="baidu-site-verification" content="true" />
+  
+  
+  <meta name="description" content="正常的机器学习项目，除了数据清洗，特征工程是最耗时和耗精力的步骤，也是对整个项目效果好坏起决定性作用的步骤之一。特征工程更多的是经验性的东西，当然所有的经验都建立在对基本方法的了解之上。本文将对特征工程中特征选择的常用方法方差分析、Pearson、Spearman进行介绍。">
+<meta name="keywords" content="特征工程,特征选择,Pearson,Spearman">
+<meta property="og:type" content="article">
+<meta property="og:title" content="特征选择方法详解Part1-方差分析、Pearson、Spearman">
+<meta property="og:url" content="https:&#x2F;&#x2F;jkknotes.com&#x2F;%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part1-%E6%96%B9%E5%B7%AE%E5%88%86%E6%9E%90%E3%80%81Pearson%E3%80%81Spearman&#x2F;index.html">
+<meta property="og:site_name" content="KK&#39;s Note">
+<meta property="og:description" content="正常的机器学习项目，除了数据清洗，特征工程是最耗时和耗精力的步骤，也是对整个项目效果好坏起决定性作用的步骤之一。特征工程更多的是经验性的东西，当然所有的经验都建立在对基本方法的了解之上。本文将对特征工程中特征选择的常用方法方差分析、Pearson、Spearman进行介绍。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
+<meta property="og:updated_time" content="2020-03-18T13:31:11.667Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
+  
+    <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
+  
+  <link rel="icon" href="/css/images/favicon.ico">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+  <link rel="stylesheet" href="/css/fashion.css" >
+  <link rel="stylesheet" href="/css/glyphs.css" >
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   >
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
+            
+          </h1>
+          
+          
+            <div class="site-description">WRITE AND DO BETTER</div>
+          
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/archives">Archives</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-特征选择方法详解Part1-方差分析、Pearson、Spearman" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+<div class="article-gallery">
+  <div class="article-gallery-photos">
+    
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck7xd7gjx0004qkvsfjgj7lgv noopener">
+        <img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" itemprop="image">
+      </a>
+    
+  </div>
+</div>
+
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      特征选择方法详解Part1-方差分析、Pearson、Spearman
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part1-%E6%96%B9%E5%B7%AE%E5%88%86%E6%9E%90%E3%80%81Pearson%E3%80%81Spearman/" class="article-date">
+	  <time datetime="2020-03-18T12:56:49.000Z" itemprop="datePublished">March 18, 2020</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">特征工程</a>
+ 
+      
+	<span id="busuanzi_container_page_pv">
+	  VISITORS<span id="busuanzi_value_page_pv"></span>
+	</span>
+
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>正常的机器学习项目，除了数据清洗，特征工程是最耗时和耗精力的步骤，也是对整个项目效果好坏起决定性作用的步骤之一。特征工程更多的是经验性的东西，当然所有的经验都建立在对基本方法的了解之上。本文将对特征工程中<strong>特征选择</strong>的常用方法方差分析、Pearson、Spearman进行介绍。<a id="more"></a></p>
+<h1 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h1><h2 id="专家推荐和业务理解"><a href="#专家推荐和业务理解" class="headerlink" title="专家推荐和业务理解"></a>专家推荐和业务理解</h2><p>此种方法是最基本、最简单也是最重要的一步。</p>
+<p>当数据准备好，几百个特征摆在眼前，如果我们对业务很熟悉，有比较深刻的理解，我们自然能知道哪些特征很重要，而哪些特征没什么用，这样就自然而然的去掉了一些特征，再继续使用其他方法进行特征选择。</p>
+<p>而当我们对业务不太熟悉，或者没办法短时间内有很深刻的理解。比如说一个纯技术的同学，突然接到一个关于医疗的项目，我想最聪明的办法，去找医生聊一聊，让他们给一些建议。</p>
+<h2 id="方差分析"><a href="#方差分析" class="headerlink" title="方差分析"></a>方差分析</h2><p>方差分析是一个简单、基本的特征选择方法。简单来说，方差越大的特征，认为其越有用，而方差越小的特征，因为每个样本在此特征的值比较接近或者相同，就认为其对模型训练没有作用。sklearn中的方法VarianceThreshold可以很方便的完成此项工作。这里直接给出官方文档中的示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> VarianceThreshold</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X = [[<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sel = VarianceThreshold(threshold=(<span class="number">.8</span> * (<span class="number">1</span> - <span class="number">.8</span>)))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sel.fit_transform(X)</span><br><span class="line">array([[<span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">1</span>]])</span><br></pre></td></tr></table></figure>
+
+<h1 id="单变量分析"><a href="#单变量分析" class="headerlink" title="单变量分析"></a>单变量分析</h1><h2 id="Pearson-Correlation-Coefficient"><a href="#Pearson-Correlation-Coefficient" class="headerlink" title="Pearson Correlation Coefficient"></a>Pearson Correlation Coefficient</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>Pearson Correlation Coefficient（皮尔逊相关系数）表示2个向量的线性相关程度。</p>
+<p>先上公式：</p>
+<p>$$\rho(X, Y) = \frac{\sum_{i=1}^n(X-\mu_x)(Y-\mu_y)}{\sqrt{\sum_{i=1}^n(X_i - \mu_x)^2}\sqrt{\sum_{i=1}^n(Y_i - \mu_y)^2}}$$</p>
+<p>可以看到分子是向量X和Y（也就是特征X和label Y）的协方差（Covariance），分母是X和Y方差的积。通俗的说，协方差描述2个向量线性相关的程度，如果一个变量跟随另一个变量同时变大或者变小，那么这两个变量的协方差就是正值，反之类似。但是X和Y的协方差的值比Z和Y的协方差值大，并不能代表X和Y的相关性比Z和Y的相关性强。为了消除这种类似于“量纲”不同带来的影响，于是将协方差除以2个向量的方差，即得到值在区间[-1, 1]的Pearson Correlation Coefficient（皮尔逊相关系数），-1表示2个变量完全负相关，1表示2个变量完全正相关。</p>
+<p><strong>另一个我认为更好的解释是：</strong>仔细观察上式，其其实是向量 $X-\mu_x$ 和 $Y-\mu_y$ 夹角的余弦值，我们知道，当余弦值为1，2个向量完全重合，即完全正相关，当余弦值为-1， 2个向量方向相反，即完全负相关。那为什么不直接计算2个向量的余弦值而是还需要减去各自的均值，回忆高中数学，向量都是以原点为起点，以终点坐标表示该向量，即所有向量的数字表示都在同一坐标系下，这里减均值起到相同的效果。</p>
+<p>其实上面的解释，如果将 $X-\mu_x$ 和 $Y-\mu_y$ 看成一个整体，说的也就是<strong>余弦相似度</strong>，在NLP任务中，其常被用来度量2个词向量的相似度。</p>
+<p>同时在运用Pearson方法时，有一个很重要的前提：要对其进行显著性检验。我们的数据是从真实世界采集的，不一定代表真实世界数据的分布，即存在抽样误差，这就导致我们计算的皮尔逊相关性系数不一定有意义。至于如何证明二者有意义，这篇文章就不详细说了。聪明的数学家想到使用T检验计算一个值P-value，如果P-value小于0.05（大部分研究使用），就表明有95%的置信度相信真实世界的数据是有相关性的（可网上搜索详细原理）。</p>
+<p>这里附一张图，可视化皮尔逊相关系数取不同值时，数据分布大致长什么样：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p1.png" alt=""></p>
+<h3 id="Notice"><a href="#Notice" class="headerlink" title="Notice"></a>Notice</h3><ul>
+<li>使用pearson方法的数据应满足正态分布。这是显著性检验方法T检验的前提。</li>
+<li>皮尔逊相关系数是用于衡量线性相关关系的，在不清楚数据分布的情况下，不能直接比较皮尔逊相关系数。比较简单的方法是画散点图看一下大概趋势。</li>
+<li>异常值会对结果产生较大影响。</li>
+<li>当皮尔逊相关系数为0，不能说明其完全不相关，可能是非线性相关。</li>
+</ul>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.arange(<span class="number">7</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.pearsonr(a, b)</span><br><span class="line"><span class="comment"># 第一项Pearson相关系数，第二项P-value</span></span><br><span class="line">(<span class="number">0.8660254037844386</span>, <span class="number">0.011724811003954649</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.pearsonr([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], [<span class="number">10</span>, <span class="number">9</span>, <span class="number">2.5</span>, <span class="number">6</span>, <span class="number">4</span>])</span><br><span class="line">(<span class="number">-0.7426106572325057</span>, <span class="number">0.1505558088534455</span>)</span><br></pre></td></tr></table></figure>
+
+<p>另外，pandas的corr()方法，也可批量计算Pearson相关性系数。</p>
+<p>看到这里，来一个玩相关性的小游戏 <a href="http://guessthecorrelation.com/" target="_blank" rel="noopener"><strong>Guess the Correlation</strong></a></p>
+<h2 id="Spearman-Correlation-Coefficient"><a href="#Spearman-Correlation-Coefficient" class="headerlink" title="Spearman Correlation Coefficient"></a>Spearman Correlation Coefficient</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>Spearman Correlation Coefficient（斯皮尔曼相关系数）表示2个向量的<strong>单调</strong>相关程度，即变量Y随X增大而增大或者减小的程度，其取值范围为[-1,1]。</p>
+<p>先上公式：</p>
+<p>$$\rho_s = 1 - \frac{6\sum{d_i^2}}{n(n^2 - 1)}$$</p>
+<p>对于已知的向量X=[4,5,2]和Y=[7,4,6]，首先将X和Y按大小进行排序，并按排序前X元素的位置，记下该元素排序后的次序。比如X从大往小排序后，4排第2位，5排第1位，2排第3位，排序后位置X’=[2,1,3], 同理得到Y’=[1,3,2].上式中的 $\sum{d_i^2}=(2-1)^2+(1-3)^2+(3-2)^2$ ，n就是向量中数据的个数，代入上式可求的斯皮尔曼相关系数为0.25.</p>
+<p>同样，斯皮尔曼方法也需要进行显著性检验，P-value的含义如上文介绍，不再赘述。</p>
+<h3 id="Notice-1"><a href="#Notice-1" class="headerlink" title="Notice"></a>Notice</h3><ul>
+<li>使用斯皮尔曼方法，没有对数据分布的要求</li>
+<li>斯皮尔曼相关系数表示的是2个向量的单调相关程度，即变量Y随X增大而增大或者减小的程度，即使其值为0，也不能说明完全不相关，因为可能是其他非单调相关（可看下面代码示例）。</li>
+</ul>
+<h3 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = range(<span class="number">-5</span>, <span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = [x ** <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> a] <span class="comment"># 非单调</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = [x ** <span class="number">3</span> <span class="keyword">for</span> x <span class="keyword">in</span> a] <span class="comment"># 单调递增</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.spearmanr(a, b)</span><br><span class="line">SpearmanrResult(correlation=<span class="number">-0.27609440361293197</span>, pvalue=<span class="number">0.44001452222946114</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.spearmanr(a, c)</span><br><span class="line">SpearmanrResult(correlation=<span class="number">0.9999999999999999</span>, pvalue=<span class="number">6.646897422032013e-64</span>)</span><br></pre></td></tr></table></figure>
+
+<p>另外，pandas的corr()方法，也可批量计算Spearman相关性系数</p>
+<h1 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h1><p>Part 1就写到这里，卡方检验、互信息和基于模型的特征选择方法可继续看part2、part3</p>
+
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">特征工程</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pearson/" rel="tag">Pearson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spearman/" rel="tag">Spearman</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/" rel="tag">特征选择</a></li></ul>
+
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+      
+        
+        <div id="vcomments"></div>
+		<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    		<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+	    	av: AV,
+                el: '#vcomments',
+                appId: '2D30CEQ8V1SWbAhEuhAVDLff-gzGzoHsz',
+                appKey: 'OoybxmzBIBcKIlDStoAh6dmV',
+		placeholder: 'email可选，填上昵称评论吧',
+		avatar: 'monsterid',
+		meta: ['nick', 'mail']
+            })
+	    //增加以下六行代码去除 power by valine
+    	var infoEle = document.querySelector('#vcomments .info');
+    	if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      		infoEle.childNodes.forEach(function(item) {
+        		item.parentNode.removeChild(item);
+      		});
+    	}	
+        </script>
+
+
+      
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/kaggle%E3%80%8ASIIM-ACR%20Pneumothorax%20Segmentation%E3%80%8B%E7%AC%AC%E4%B8%80%E5%90%8D%E6%96%B9%E6%A1%88%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本方法"><span class="nav-number">1.</span> <span class="nav-text">基本方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#专家推荐和业务理解"><span class="nav-number">1.1.</span> <span class="nav-text">专家推荐和业务理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方差分析"><span class="nav-number">1.2.</span> <span class="nav-text">方差分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单变量分析"><span class="nav-number">2.</span> <span class="nav-text">单变量分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pearson-Correlation-Coefficient"><span class="nav-number">2.1.</span> <span class="nav-text">Pearson Correlation Coefficient</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">2.1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Notice"><span class="nav-number">2.1.2.</span> <span class="nav-text">Notice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例"><span class="nav-number">2.1.3.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spearman-Correlation-Coefficient"><span class="nav-number">2.2.</span> <span class="nav-text">Spearman Correlation Coefficient</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Notice-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">Notice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">使用示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后续"><span class="nav-number">3.</span> <span class="nav-text">后续</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 KK&#39;s Note All Rights Reserved.&nbsp;&nbsp;
+        
+            <span id="busuanzi_container_site_uv">
+              Unique Visitor: <span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;  
+              Page View: <span id="busuanzi_value_site_pv"></span>
+            </span>
+          
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>
+      </div>
+  </div>
+  <script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+<div style="display: none;">
+  <script src="https://s11.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+</div>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+</body>
+</html>

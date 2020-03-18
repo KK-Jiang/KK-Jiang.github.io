@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://jkknotes.com/"/>
-  <updated>2020-01-16T15:36:09.955Z</updated>
+  <updated>2020-03-18T13:31:11.667Z</updated>
   <id>https://jkknotes.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>特征选择方法详解Part1-方差分析、Pearson、Spearman</title>
+    <link href="https://jkknotes.com/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part1-%E6%96%B9%E5%B7%AE%E5%88%86%E6%9E%90%E3%80%81Pearson%E3%80%81Spearman/"/>
+    <id>https://jkknotes.com/特征选择方法详解Part1-方差分析、Pearson、Spearman/</id>
+    <published>2020-03-18T12:56:49.000Z</published>
+    <updated>2020-03-18T13:31:11.667Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>正常的机器学习项目，除了数据清洗，特征工程是最耗时和耗精力的步骤，也是对整个项目效果好坏起决定性作用的步骤之一。特征工程更多的是经验性的东西，当然所有的经验都建立在对基本方法的了解之上。本文将对特征工程中<strong>特征选择</strong>的常用方法方差分析、Pearson、Spearman进行介绍。<a id="more"></a></p><h1 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h1><h2 id="专家推荐和业务理解"><a href="#专家推荐和业务理解" class="headerlink" title="专家推荐和业务理解"></a>专家推荐和业务理解</h2><p>此种方法是最基本、最简单也是最重要的一步。</p><p>当数据准备好，几百个特征摆在眼前，如果我们对业务很熟悉，有比较深刻的理解，我们自然能知道哪些特征很重要，而哪些特征没什么用，这样就自然而然的去掉了一些特征，再继续使用其他方法进行特征选择。</p><p>而当我们对业务不太熟悉，或者没办法短时间内有很深刻的理解。比如说一个纯技术的同学，突然接到一个关于医疗的项目，我想最聪明的办法，去找医生聊一聊，让他们给一些建议。</p><h2 id="方差分析"><a href="#方差分析" class="headerlink" title="方差分析"></a>方差分析</h2><p>方差分析是一个简单、基本的特征选择方法。简单来说，方差越大的特征，认为其越有用，而方差越小的特征，因为每个样本在此特征的值比较接近或者相同，就认为其对模型训练没有作用。sklearn中的方法VarianceThreshold可以很方便的完成此项工作。这里直接给出官方文档中的示例：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> VarianceThreshold</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X = [[<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], </span><br><span class="line">         [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sel = VarianceThreshold(threshold=(<span class="number">.8</span> * (<span class="number">1</span> - <span class="number">.8</span>)))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sel.fit_transform(X)</span><br><span class="line">array([[<span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">1</span>, <span class="number">1</span>]])</span><br></pre></td></tr></table></figure><h1 id="单变量分析"><a href="#单变量分析" class="headerlink" title="单变量分析"></a>单变量分析</h1><h2 id="Pearson-Correlation-Coefficient"><a href="#Pearson-Correlation-Coefficient" class="headerlink" title="Pearson Correlation Coefficient"></a>Pearson Correlation Coefficient</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>Pearson Correlation Coefficient（皮尔逊相关系数）表示2个向量的线性相关程度。</p><p>先上公式：</p><p>$$\rho(X, Y) = \frac{\sum_{i=1}^n(X-\mu_x)(Y-\mu_y)}{\sqrt{\sum_{i=1}^n(X_i - \mu_x)^2}\sqrt{\sum_{i=1}^n(Y_i - \mu_y)^2}}$$</p><p>可以看到分子是向量X和Y（也就是特征X和label Y）的协方差（Covariance），分母是X和Y方差的积。通俗的说，协方差描述2个向量线性相关的程度，如果一个变量跟随另一个变量同时变大或者变小，那么这两个变量的协方差就是正值，反之类似。但是X和Y的协方差的值比Z和Y的协方差值大，并不能代表X和Y的相关性比Z和Y的相关性强。为了消除这种类似于“量纲”不同带来的影响，于是将协方差除以2个向量的方差，即得到值在区间[-1, 1]的Pearson Correlation Coefficient（皮尔逊相关系数），-1表示2个变量完全负相关，1表示2个变量完全正相关。</p><p><strong>另一个我认为更好的解释是：</strong>仔细观察上式，其其实是向量 $X-\mu_x$ 和 $Y-\mu_y$ 夹角的余弦值，我们知道，当余弦值为1，2个向量完全重合，即完全正相关，当余弦值为-1， 2个向量方向相反，即完全负相关。那为什么不直接计算2个向量的余弦值而是还需要减去各自的均值，回忆高中数学，向量都是以原点为起点，以终点坐标表示该向量，即所有向量的数字表示都在同一坐标系下，这里减均值起到相同的效果。</p><p>其实上面的解释，如果将 $X-\mu_x$ 和 $Y-\mu_y$ 看成一个整体，说的也就是<strong>余弦相似度</strong>，在NLP任务中，其常被用来度量2个词向量的相似度。</p><p>同时在运用Pearson方法时，有一个很重要的前提：要对其进行显著性检验。我们的数据是从真实世界采集的，不一定代表真实世界数据的分布，即存在抽样误差，这就导致我们计算的皮尔逊相关性系数不一定有意义。至于如何证明二者有意义，这篇文章就不详细说了。聪明的数学家想到使用T检验计算一个值P-value，如果P-value小于0.05（大部分研究使用），就表明有95%的置信度相信真实世界的数据是有相关性的（可网上搜索详细原理）。</p><p>这里附一张图，可视化皮尔逊相关系数取不同值时，数据分布大致长什么样：</p><p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p1.png" alt=""></p><h3 id="Notice"><a href="#Notice" class="headerlink" title="Notice"></a>Notice</h3><ul><li>使用pearson方法的数据应满足正态分布。这是显著性检验方法T检验的前提。</li><li>皮尔逊相关系数是用于衡量线性相关关系的，在不清楚数据分布的情况下，不能直接比较皮尔逊相关系数。比较简单的方法是画散点图看一下大概趋势。</li><li>异常值会对结果产生较大影响。</li><li>当皮尔逊相关系数为0，不能说明其完全不相关，可能是非线性相关。</li></ul><h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.arange(<span class="number">7</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.pearsonr(a, b)</span><br><span class="line"><span class="comment"># 第一项Pearson相关系数，第二项P-value</span></span><br><span class="line">(<span class="number">0.8660254037844386</span>, <span class="number">0.011724811003954649</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.pearsonr([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], [<span class="number">10</span>, <span class="number">9</span>, <span class="number">2.5</span>, <span class="number">6</span>, <span class="number">4</span>])</span><br><span class="line">(<span class="number">-0.7426106572325057</span>, <span class="number">0.1505558088534455</span>)</span><br></pre></td></tr></table></figure><p>另外，pandas的corr()方法，也可批量计算Pearson相关性系数。</p><p>看到这里，来一个玩相关性的小游戏 <a href="http://guessthecorrelation.com/" target="_blank" rel="noopener"><strong>Guess the Correlation</strong></a></p><h2 id="Spearman-Correlation-Coefficient"><a href="#Spearman-Correlation-Coefficient" class="headerlink" title="Spearman Correlation Coefficient"></a>Spearman Correlation Coefficient</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>Spearman Correlation Coefficient（斯皮尔曼相关系数）表示2个向量的<strong>单调</strong>相关程度，即变量Y随X增大而增大或者减小的程度，其取值范围为[-1,1]。</p><p>先上公式：</p><p>$$\rho_s = 1 - \frac{6\sum{d_i^2}}{n(n^2 - 1)}$$</p><p>对于已知的向量X=[4,5,2]和Y=[7,4,6]，首先将X和Y按大小进行排序，并按排序前X元素的位置，记下该元素排序后的次序。比如X从大往小排序后，4排第2位，5排第1位，2排第3位，排序后位置X’=[2,1,3], 同理得到Y’=[1,3,2].上式中的 $\sum{d_i^2}=(2-1)^2+(1-3)^2+(3-2)^2$ ，n就是向量中数据的个数，代入上式可求的斯皮尔曼相关系数为0.25.</p><p>同样，斯皮尔曼方法也需要进行显著性检验，P-value的含义如上文介绍，不再赘述。</p><h3 id="Notice-1"><a href="#Notice-1" class="headerlink" title="Notice"></a>Notice</h3><ul><li>使用斯皮尔曼方法，没有对数据分布的要求</li><li>斯皮尔曼相关系数表示的是2个向量的单调相关程度，即变量Y随X增大而增大或者减小的程度，即使其值为0，也不能说明完全不相关，因为可能是其他非单调相关（可看下面代码示例）。</li></ul><h3 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = range(<span class="number">-5</span>, <span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = [x ** <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> a] <span class="comment"># 非单调</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = [x ** <span class="number">3</span> <span class="keyword">for</span> x <span class="keyword">in</span> a] <span class="comment"># 单调递增</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.spearmanr(a, b)</span><br><span class="line">SpearmanrResult(correlation=<span class="number">-0.27609440361293197</span>, pvalue=<span class="number">0.44001452222946114</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stats.spearmanr(a, c)</span><br><span class="line">SpearmanrResult(correlation=<span class="number">0.9999999999999999</span>, pvalue=<span class="number">6.646897422032013e-64</span>)</span><br></pre></td></tr></table></figure><p>另外，pandas的corr()方法，也可批量计算Spearman相关性系数</p><h1 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h1><p>Part 1就写到这里，卡方检验、互信息和基于模型的特征选择方法可继续看part2、part3</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;正常的机器学习项目，除了数据清洗，特征工程是最耗时和耗精力的步骤，也是对整个项目效果好坏起决定性作用的步骤之一。特征工程更多的是经验性的东西，当然所有的经验都建立在对基本方法的了解之上。本文将对特征工程中&lt;strong&gt;特征选择&lt;/strong&gt;的常用方法方差分析、Pearson、Spearman进行介绍。
+    
+    </summary>
+    
+    
+      <category term="Machine Learning" scheme="https://jkknotes.com/categories/Machine-Learning/"/>
+    
+      <category term="特征工程" scheme="https://jkknotes.com/categories/Machine-Learning/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
+    
+    
+      <category term="特征工程" scheme="https://jkknotes.com/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
+    
+      <category term="特征选择" scheme="https://jkknotes.com/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/"/>
+    
+      <category term="Pearson" scheme="https://jkknotes.com/tags/Pearson/"/>
+    
+      <category term="Spearman" scheme="https://jkknotes.com/tags/Spearman/"/>
+    
+  </entry>
   
   <entry>
     <title>Kaggle《SIIM-ACR Pneumothorax Segmentation》第一名方案详解</title>
@@ -93,9 +124,9 @@
       <category term="Code 总结" scheme="https://jkknotes.com/categories/Code-Tool/Code-%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="Tool" scheme="https://jkknotes.com/tags/Tool/"/>
-    
       <category term="Pandas" scheme="https://jkknotes.com/tags/Pandas/"/>
+    
+      <category term="Tool" scheme="https://jkknotes.com/tags/Tool/"/>
     
   </entry>
   
@@ -120,9 +151,9 @@
       <category term="命令速查" scheme="https://jkknotes.com/categories/Code-Tool/%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/"/>
     
     
-      <category term="Git" scheme="https://jkknotes.com/tags/Git/"/>
-    
       <category term="Tool" scheme="https://jkknotes.com/tags/Tool/"/>
+    
+      <category term="Git" scheme="https://jkknotes.com/tags/Git/"/>
     
   </entry>
   
