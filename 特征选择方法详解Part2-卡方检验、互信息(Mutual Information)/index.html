@@ -22,7 +22,7 @@
 <meta property="og:description" content="在前文《特征选择方法详解Part1-方差分析、Pearson、Spearman》中，详细总结了特征选择的基本方法专家推荐、方差分析和单变量相关性分析方法Pearson、Spearman方法。在本文中将延续Part1的行文结构，介绍单变量相关性分析方法中的卡方检验和互信息方法。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
-<meta property="og:updated_time" content="2020-03-22T09:40:39.508Z">
+<meta property="og:updated_time" content="2020-03-23T12:33:40.145Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
   
@@ -115,7 +115,7 @@
 <div class="article-gallery">
   <div class="article-gallery-photos">
     
-      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck82v1l760008igvs4o9p2y8f noopener">
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck8binbvj0009rwvsfzr13y3m noopener">
         <img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" itemprop="image">
       </a>
     
@@ -259,13 +259,13 @@
 <p>$$AMI(X, Y)=\frac{MI(X, Y) - E(MI(X, Y))}{F(H(X), H(Y)) - E(MI(X, Y))}$$</p>
 <p>至于上式中的 $E(MI(X, Y))$ 的定义，由于太长且很复杂，这里就不写了（主要自己没理解[捂脸]），给个维基百科的链接吧，有兴趣的朋友可以fan&amp;@¥墙看一下<a href="https://en.wikipedia.org/wiki/Adjusted_mutual_information" target="_blank" rel="noopener">Adjusted Mutual Information</a>）。</p>
 <h3 id="Notice"><a href="#Notice" class="headerlink" title="Notice"></a>Notice</h3><ul>
-<li><p>不管是NMutual Information还是Normalized Mutual Information都有一个缺点：对于离散变量X和Y，如果X和Y的取值越多，那么MI（X,Y）和NMI（X,Y）都倾向于变得更大，而这并不代表X和Y的相关性变得更强；</p>
+<li><p>不管是NMutual Information还是Normalized Mutual Information都有一个缺点：对于离散变量X和Y，如果X和Y的取值越多，那么MI（X,Y）和NMI（X,Y）都倾向于变得更大，而这并不代表X和Y的相关性变得更强。所以现在使用更多的是Adjusted Mutual Information；</p>
 </li>
 <li><p>sklearn中mutual_info_regression方法在计算互信息时使用的是定义三；</p>
 </li>
 <li><p>sklearn中mutual_info_classif方法在计算互信息时，如果X和Y其中出现连续变量，使用定义三计算互信息，如果都是离散变量，则直接调用sklearn.metrics.mutual_info_score方法，即定义二中的第一个公式；</p>
 </li>
-<li><p>sklearn.metrics中方法mutual_info_score、normalized_mutual_info_score、adjusted_mutual_info_score本意是评价聚类算法效果的，所以这三种算法只支持离散变量。即使输入离散变量也会按照离散变量去计算，导致不正确的结果。</p>
+<li><p>sklearn.metrics中方法mutual_info_score、normalized_mutual_info_score、adjusted_mutual_info_score本意是评价聚类算法效果的，所以这三种算法只支持离散变量。即使输入连续变量也会按照离散变量去计算，导致不正确的结果。</p>
 </li>
 </ul>
 <h3 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h3><p>sklearn.feature_select中方法mutual_info_regression、mutual_info_classif的使用可见上节卡方检验的使用示例（只需要将方法chi2改成mutual_info_regressionu或mutual_info_classif即可）。</p>
@@ -318,6 +318,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part3-SelectFromModel-%20RFE%E3%80%81L1%E3%80%81Tree%E3%80%81Permutation%20importance/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          特征选择方法详解Part3-SelectFromModel- RFE、L1、Tree、Permutation importance
+        
+      </div>
+    </a>
   
   
     <a href="/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part1-%E6%96%B9%E5%B7%AE%E5%88%86%E6%9E%90%E3%80%81Pearson%E3%80%81Spearman/" id="article-nav-older" class="article-nav-link-wrap">

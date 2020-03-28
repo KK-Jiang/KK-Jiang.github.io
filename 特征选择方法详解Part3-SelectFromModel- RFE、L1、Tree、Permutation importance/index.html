@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>特征选择方法详解Part3-SelectFromModel- RFE、L1、Tree、Permutation importance | KK&#39;s Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="特征工程特征选择RFEL1Permutation importance" />
+  
+  
+  
+    <meta name="baidu-site-verification" content="true" />
+  
+  
+  <meta name="description" content="到目前为止，已经在《特征选择方法详解Part1-方差分析、Pearson、Spearman》和《特征选择方法详解Part2-卡方检验、互信息(Mutual Information)》2篇博文中，详细总结了特征选择的基本方法专家推荐、方差分析和单变量相关性分析方法Pearson、Spearman、卡方检验、互信息方法。本文将最后介绍一下基于模型的特征选择方法，主要包括sklearn中的RFE、基于L">
+<meta name="keywords" content="特征工程,特征选择,RFE,L1,Permutation importance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="特征选择方法详解Part3-SelectFromModel- RFE、L1、Tree、Permutation importance">
+<meta property="og:url" content="https:&#x2F;&#x2F;jkknotes.com&#x2F;%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part3-SelectFromModel-%20RFE%E3%80%81L1%E3%80%81Tree%E3%80%81Permutation%20importance&#x2F;index.html">
+<meta property="og:site_name" content="KK&#39;s Note">
+<meta property="og:description" content="到目前为止，已经在《特征选择方法详解Part1-方差分析、Pearson、Spearman》和《特征选择方法详解Part2-卡方检验、互信息(Mutual Information)》2篇博文中，详细总结了特征选择的基本方法专家推荐、方差分析和单变量相关性分析方法Pearson、Spearman、卡方检验、互信息方法。本文将最后介绍一下基于模型的特征选择方法，主要包括sklearn中的RFE、基于L">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
+<meta property="og:updated_time" content="2020-03-28T11:12:39.577Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
+  
+    <link rel="alternate" href="/atom.xml" title="KK&#39;s Note" type="application/atom+xml">
+  
+  <link rel="icon" href="/css/images/favicon.ico">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+    
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Yanone+Kaffeesatz%3A200%2C300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+
+  <link rel="stylesheet" id="athemes-headings-fonts-css" href="//fonts.googleapis.com/css?family=Oswald%3A300%2C400%2C700&amp;ver=4.6.1" type="text/css" media="all">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" >
+  <link rel="stylesheet" href="/css/fashion.css" >
+  <link rel="stylesheet" href="/css/glyphs.css" >
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+
+
+<header id="allheader" class="site-header" role="banner" 
+   >
+  <div class="clearfix container">
+      <div class="site-branding">
+
+          <h1 class="site-title">
+            
+              <a href="/" title="KK&#39;s Note" rel="home"> KK&#39;s Note </a>
+            
+          </h1>
+          
+          
+            <div class="site-description">WRITE AND DO BETTER</div>
+          
+            
+          <nav id="main-navigation" class="main-navigation" role="navigation">
+            <a class="nav-open">Menu</a>
+            <a class="nav-close">Close</a>
+
+            <div class="clearfix sf-menu">
+              <ul id="main-nav" class="menu sf-js-enabled sf-arrows"  style="touch-action: pan-y;">
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/">Home</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/archives">Archives</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/categories">Categories</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/tags">Tags</a> </li>
+                    
+                      <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1663"> <a class="" href="/about">About</a> </li>
+                    
+              </ul>
+            </div>
+          </nav>
+
+      </div>
+  </div>
+</header>
+
+
+  <div id="container">
+    <div id="wrap">
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-特征选择方法详解Part3-SelectFromModel- RFE、L1、Tree、Permutation importance" style="width: 66%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="clearfix post-1016 post type-post status-publish format-standard has-post-thumbnail hentry category-template-2 category-uncategorized tag-codex tag-edge-case tag-featured-image tag-image tag-template">
+    
+<div class="article-gallery">
+  <div class="article-gallery-photos">
+    
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck8binbvo000irwvs77ise1hs noopener">
+        <img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" itemprop="image">
+      </a>
+    
+  </div>
+</div>
+
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      特征选择方法详解Part3-SelectFromModel- RFE、L1、Tree、Permutation importance
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part3-SelectFromModel-%20RFE%E3%80%81L1%E3%80%81Tree%E3%80%81Permutation%20importance/" class="article-date">
+	  <time datetime="2020-03-28T11:12:00.000Z" itemprop="datePublished">March 28, 2020</time>
+	</a>
+
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">特征工程</a>
+ 
+      
+	<span id="busuanzi_container_page_pv">
+	  VISITORS<span id="busuanzi_value_page_pv"></span>
+	</span>
+
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>到目前为止，已经在《特征选择方法详解Part1-方差分析、Pearson、Spearman》和《特征选择方法详解Part2-卡方检验、互信息(Mutual Information)》2篇博文中，详细总结了特征选择的基本方法专家推荐、方差分析和单变量相关性分析方法Pearson、Spearman、卡方检验、互信息方法。本文将最后介绍一下基于模型的特征选择方法，主要包括sklearn中的RFE、基于L1正则化的方法、基于树模型的方法还有python库eli5提供的方法Permutation importance，本文偏向于应用，理论比较少。<a id="more"></a></p>
+<h1 id="基于模型的特征选择方法"><a href="#基于模型的特征选择方法" class="headerlink" title="基于模型的特征选择方法"></a>基于模型的特征选择方法</h1><h2 id="RFE-Recursive-feature-elimination"><a href="#RFE-Recursive-feature-elimination" class="headerlink" title="RFE(Recursive feature elimination)"></a>RFE(Recursive feature elimination)</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>这个方法其实比较简单，就是使用机器学习模型不断的去训练模型，每训练一个模型，就去掉一个最不重要的特征，直到特征达到指定的数量。从上面的描述可知，所使用的模型能表示出特征重要性排序。在sklearn中，带有<strong>coef_</strong> 和 <strong>‌feature_importances_</strong> 的模型都可以，这样的模型比较多，基于树的模型、线性的一系列模型大都满足要求，具体选择哪个，可以多尝试。</p>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><p>sklearn.feature_selection.RFE方法和sklearn.feature_selection.RFECV方法实现了这种方法，两者的区别是，后者使用了交叉验证。这里直接给出sklearn文档中的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_friedman1</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> RFECV</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVR</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X, y = make_friedman1(n_samples=<span class="number">50</span>, n_features=<span class="number">10</span>, random_state=<span class="number">0</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>estimator = SVR(kernel=<span class="string">"linear"</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>selector = RFECV(estimator, step=<span class="number">1</span>, cv=<span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>selector = selector.fit(X, y)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>selector.support_  <span class="comment"># 值为True的列表示被选择的特征</span></span><br><span class="line">array([ <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>])</span><br></pre></td></tr></table></figure>
+
+<h2 id="基于L1正则化的方法"><a href="#基于L1正则化的方法" class="headerlink" title="基于L1正则化的方法"></a>基于L1正则化的方法</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>要理解为什么L1范数能进行特征选择，那就要从正则化说起，正则化是一种防止机器学习模型过拟合的方法，它的具体实现是在机器学习模型的损失函数加上一个惩罚项，即正则化项，其一般形式如下：</p>
+<p>$$Loss function = \sum_{i=1}^NL(f(x_i), y_i)+\lambda J(w_i)$$</p>
+<p>上式中的 $J(w_i)$ 函数即是正则化项，上式中的第一项称为期望损失。为什么能正则化项能起到防止过拟合的作用呢？模型过拟合，表现在其在训练集上表现的比较好，但泛化能力差。如果每个样本都是一个点，那过拟合的模型会剧烈的上下抖动尽力穿过每一个点，这样模型参数 $w_i$ 绝对值就比较大。在训练模型时，实际上不断的迭代模型参数 $w_i$ 使损失函数最小，为了达到这个目的，损失函数就希望期望损失和正则化项都较小，而实际上期望损失变小则正则化项就变大，两者不断博弈，最后达到一个最优的状态。这时候实际上对于无用的特征，其 $w_i$ 就会变的很小，这也是上节中RFE方法的基础所在。</p>
+<p>回到L1正则化，其公式如下：</p>
+<p>$$J(w_i)=|W|<em>1=\sum</em>{i=1}^N|w_i|$$</p>
+<p>L1正则化有一个不一样的特点，当使用带正则化项的损失函数，当模型达到最优，无用特征前面的系数 $w_i$ 就会变成0，也就是起到了特征选择的作用。注意到上面公式正则化项前都有一个参数 $\lambda$ ，其是控制惩罚程度的参数，其越大越不容易过拟合。在特征选择时，其越大，则系数为0的特征越多。</p>
+<p>在sklearn文档中，官方建议：如果是回归任务， 使用<a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html" target="_blank" rel="noopener">linear_model.Lasso</a>做特征选择，其实L1又叫Lasso，Lasso模型损失函数的公式如下：</p>
+<p>$$\frac{1}{2n}\sum_{i=1}^N||y_i-f(x_i, w_i)||^2 + \lambda||W||_1$$</p>
+<p>如果是分类任务，使用逻辑回归<a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" target="_blank" rel="noopener">linear_model.LogisticRegression</a>和核为线性核的SVM<a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" target="_blank" rel="noopener">svm.LinearSVC</a>。</p>
+<h3 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> LinearSVC</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SelectFromModel</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X, y = load_iris(return_X_y=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X.shape</span><br><span class="line">(<span class="number">150</span>, <span class="number">4</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lsvc = LinearSVC(C=<span class="number">0.01</span>, penalty=<span class="string">"l1"</span>, dual=<span class="literal">False</span>).fit(X, y)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>model = SelectFromModel(lsvc, prefit=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X_new = model.transform(X)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X_new.shape</span><br><span class="line">(<span class="number">150</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="基于树模型的方法"><a href="#基于树模型的方法" class="headerlink" title="基于树模型的方法"></a>基于树模型的方法</h2><h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>在《特征选择方法详解Part2-卡方检验、互信息(Mutual Information)》一文中，详细介绍了互信息方法。实际上经典决策树模型ID3，就是通过互信息，即信息增益实现建模的。后来的决策树模型C4.5使用信息增益率进行建模，无论哪种方法，都是先从“对数据集纯度影响大的特征”开始分支的，实际上建树的过程，就是特征选择的过程，也是特征重要性排序的过程。</p>
+<p>这里附上一张我原来输出过的决策树的图，感性的看一下决策树长什么样（可点击看高清图），越靠近根部的特征越重要：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/1904/tree.png" alt=""></p>
+<h3 id="使用示例-2"><a href="#使用示例-2" class="headerlink" title="使用示例"></a>使用示例</h3><p>在sklearn中基于树的模型都可以做特征选择，主要包括树模型库sklearn.tree下面的树模型和集成学习方法库sklearn.ensemble下面的基于树的模型。同样，给一个官方文档中的例子。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> ExtraTreesClassifier</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> SelectFromModel</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X, y = load_iris(return_X_y=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X.shape</span><br><span class="line">(<span class="number">150</span>, <span class="number">4</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>clf = ExtraTreesClassifier(n_estimators=<span class="number">50</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>clf = clf.fit(X, y)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>clf.feature_importances_  </span><br><span class="line">array([ <span class="number">0.04</span>...,  <span class="number">0.05</span>...,  <span class="number">0.4</span>...,  <span class="number">0.4</span>...])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>model = SelectFromModel(clf, prefit=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X_new = model.transform(X)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>X_new.shape               </span><br><span class="line">(<span class="number">150</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Permutation-importance"><a href="#Permutation-importance" class="headerlink" title="Permutation importance"></a>Permutation importance</h2><h3 id="原理-3"><a href="#原理-3" class="headerlink" title="原理"></a>原理</h3><p>这个原理真的很简单：依次打乱数据集中每一个特征数值的顺序，其实就是做shuffle，然后观察模型的效果，下降的多的说明这个特征对模型比较重要。没了。</p>
+<h3 id="使用示例-3"><a href="#使用示例-3" class="headerlink" title="使用示例"></a>使用示例</h3><p>下面示例中，参数model表示已经训练好的模型（支持sklearn中全部带有<strong>coef_</strong> 和 <strong>‌feature_importances_</strong> 的模型，部分pytorch和keras训练的深度学习模型）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> eli5</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> eli5.sklearn <span class="keyword">import</span> PermutationImportance</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>perm = PermutationImportance(model, random_state=<span class="number">20</span>).fit(test_x, test_y)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>eli5.show_weights(perm, feature_names=test_x.columns.tolist())</span><br></pre></td></tr></table></figure>
+
+<p>上面代码的输出见下图：</p>
+<p><img src="https://gitee.com/jjkkk/cloud_img/raw/master/1904/feature_w.png" alt=""></p>
+<h1 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h1><p>到这里，特征选择的所有方法就结束了。接下来一段时间可能专注于写深度学习领域的一些东西了。欢迎一起学习交流。</p>
+
+      
+    </div>
+    <footer class="entry-meta entry-footer">
+      
+	<span class="ico-folder"></span>
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>, <a class="article-category-link" href="/categories/Machine-Learning/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">特征工程</a>
+
+      
+  <span class="ico-tags"></span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/L1/" rel="tag">L1</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Permutation-importance/" rel="tag">Permutation importance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RFE/" rel="tag">RFE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/" rel="tag">特征选择</a></li></ul>
+
+    </footer>
+    <hr class="entry-footer-hr">
+  </div>
+      
+        
+        <div id="vcomments"></div>
+		<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    		<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <script>
+            new Valine({
+	    	av: AV,
+                el: '#vcomments',
+                appId: '2D30CEQ8V1SWbAhEuhAVDLff-gzGzoHsz',
+                appKey: 'OoybxmzBIBcKIlDStoAh6dmV',
+		placeholder: 'email可选，填上昵称评论吧',
+		avatar: 'monsterid',
+		meta: ['nick', 'mail']
+            })
+	    //增加以下六行代码去除 power by valine
+    	var infoEle = document.querySelector('#vcomments .info');
+    	if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+      		infoEle.childNodes.forEach(function(item) {
+        		item.parentNode.removeChild(item);
+      		});
+    	}	
+        </script>
+
+
+      
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3Part2-%E5%8D%A1%E6%96%B9%E6%A3%80%E9%AA%8C%E3%80%81%E4%BA%92%E4%BF%A1%E6%81%AF(Mutual%20Information)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">特征选择方法详解Part2-卡方检验、互信息(Mutual Information)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于模型的特征选择方法"><span class="nav-number">1.</span> <span class="nav-text">基于模型的特征选择方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RFE-Recursive-feature-elimination"><span class="nav-number">1.1.</span> <span class="nav-text">RFE(Recursive feature elimination)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例"><span class="nav-number">1.1.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于L1正则化的方法"><span class="nav-number">1.2.</span> <span class="nav-text">基于L1正则化的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于树模型的方法"><span class="nav-number">1.3.</span> <span class="nav-text">基于树模型的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Permutation-importance"><span class="nav-number">1.4.</span> <span class="nav-text">Permutation importance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用示例-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结束"><span class="nav-number">2.</span> <span class="nav-text">结束</span></a></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    <footer id="footer" class="site-footer">
+  
+
+  <div class="clearfix container">
+      <div class="site-info">
+	      &copy; 2020 KK&#39;s Note All Rights Reserved.&nbsp;&nbsp;
+        
+            <span id="busuanzi_container_site_uv">
+              Unique Visitor: <span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;  
+              Page View: <span id="busuanzi_value_site_pv"></span>
+            </span>
+          
+      </div>
+      <div class="site-credit">
+        Theme by <a href="https://github.com/iTimeTraveler/hexo-theme-hipaper" target="_blank">hipaper</a>
+      </div>
+  </div>
+  <script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("allheader").offsetHeight - document.getElementById("footer").offsetHeight + "px";
+
+
+    <!-- headerblur min height -->
+    
+    
+</script>
+
+    
+<div style="display: none;">
+  <script src="https://s11.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+</div>
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+  </div>
+
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js" async=""></script>
+</body>
+</html>
