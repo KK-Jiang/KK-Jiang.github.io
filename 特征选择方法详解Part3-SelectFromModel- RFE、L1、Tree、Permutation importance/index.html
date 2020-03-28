@@ -22,7 +22,7 @@
 <meta property="og:description" content="到目前为止，已经在《特征选择方法详解Part1-方差分析、Pearson、Spearman》和《特征选择方法详解Part2-卡方检验、互信息(Mutual Information)》2篇博文中，详细总结了特征选择的基本方法专家推荐、方差分析和单变量相关性分析方法Pearson、Spearman、卡方检验、互信息方法。本文将最后介绍一下基于模型的特征选择方法，主要包括sklearn中的RFE、基于L">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
-<meta property="og:updated_time" content="2020-03-28T11:12:39.577Z">
+<meta property="og:updated_time" content="2020-03-28T11:24:13.304Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;gitee.com&#x2F;jjkkk&#x2F;cloud_img&#x2F;raw&#x2F;master&#x2F;200317&#x2F;p2.jpeg">
   
@@ -115,7 +115,7 @@
 <div class="article-gallery">
   <div class="article-gallery-photos">
     
-      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck8binbvo000irwvs77ise1hs noopener">
+      <a class="article-gallery-img fancybox" href="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" target="_blank" rel="gallery_ck8bj23qh001d14vs5mi3hkw9 noopener">
         <img src="https://gitee.com/jjkkk/cloud_img/raw/master/200317/p2.jpeg" itemprop="image">
       </a>
     
@@ -161,7 +161,7 @@
 <p>$$Loss function = \sum_{i=1}^NL(f(x_i), y_i)+\lambda J(w_i)$$</p>
 <p>上式中的 $J(w_i)$ 函数即是正则化项，上式中的第一项称为期望损失。为什么能正则化项能起到防止过拟合的作用呢？模型过拟合，表现在其在训练集上表现的比较好，但泛化能力差。如果每个样本都是一个点，那过拟合的模型会剧烈的上下抖动尽力穿过每一个点，这样模型参数 $w_i$ 绝对值就比较大。在训练模型时，实际上不断的迭代模型参数 $w_i$ 使损失函数最小，为了达到这个目的，损失函数就希望期望损失和正则化项都较小，而实际上期望损失变小则正则化项就变大，两者不断博弈，最后达到一个最优的状态。这时候实际上对于无用的特征，其 $w_i$ 就会变的很小，这也是上节中RFE方法的基础所在。</p>
 <p>回到L1正则化，其公式如下：</p>
-<p>$$J(w_i)=|W|<em>1=\sum</em>{i=1}^N|w_i|$$</p>
+<p>$$J(w_i) = |W|_1 = \sum|w_i|$$</p>
 <p>L1正则化有一个不一样的特点，当使用带正则化项的损失函数，当模型达到最优，无用特征前面的系数 $w_i$ 就会变成0，也就是起到了特征选择的作用。注意到上面公式正则化项前都有一个参数 $\lambda$ ，其是控制惩罚程度的参数，其越大越不容易过拟合。在特征选择时，其越大，则系数为0的特征越多。</p>
 <p>在sklearn文档中，官方建议：如果是回归任务， 使用<a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html" target="_blank" rel="noopener">linear_model.Lasso</a>做特征选择，其实L1又叫Lasso，Lasso模型损失函数的公式如下：</p>
 <p>$$\frac{1}{2n}\sum_{i=1}^N||y_i-f(x_i, w_i)||^2 + \lambda||W||_1$$</p>
